@@ -58,14 +58,16 @@ $sections = @(
 
 # --- web part placements. Multiple web parts in the same Section+Column stack by
 #     Order. List = provisioned list; LiveNoList = live service (turn demo off);
-#     Extra = extra properties to set on real data. ---
+#     Extra = extra properties to set on real data. Variant = per-web-part layout
+#     override (universal across templates, from the prototype reconciliation);
+#     web parts with no Variant use the site-wide -Variant base. ---
 $plan = @(
-  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
+  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; Variant = 'bold'; List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
 
   # main column (2/3)
-  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1;  List = 'News' },
+  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1;  Variant = 'bold';    List = 'News' },
   @{ Title = 'Tabs';                   Sec = 2; Col = 1; Order = 2 },
-  @{ Title = 'KPI Tiles';              Sec = 2; Col = 1; Order = 3;  List = 'KPIs' },
+  @{ Title = 'KPI Tiles';              Sec = 2; Col = 1; Order = 3;  Variant = 'minimal'; List = 'KPIs' },
   @{ Title = 'Chart from a List';      Sec = 2; Col = 1; Order = 4;  List = 'Tickets'; Extra = @{ categoryField = 'TicketStatus' } },
   @{ Title = 'Kudos';                  Sec = 2; Col = 1; Order = 5;  List = 'Kudos' },
   @{ Title = 'Raise a Ticket';         Sec = 2; Col = 1; Order = 6;  List = 'Tickets' },
@@ -76,7 +78,7 @@ $plan = @(
 
   # sidebar (1/3)
   @{ Title = 'Weather';                Sec = 2; Col = 2; Order = 1;  Extra = @{ location = 'London' } },
-  @{ Title = 'Employee of the Month';  Sec = 2; Col = 2; Order = 2;  List = 'EmployeeOfMonth' },
+  @{ Title = 'Employee of the Month';  Sec = 2; Col = 2; Order = 2;  Variant = 'bold'; List = 'EmployeeOfMonth' },
   @{ Title = 'Upcoming Events';        Sec = 2; Col = 2; Order = 3;  List = 'Events' },
   @{ Title = 'Celebrations';           Sec = 2; Col = 2; Order = 4;  List = 'Celebrations' },
   @{ Title = 'Quick Links';            Sec = 2; Col = 2; Order = 5;  List = 'QuickLinks' },
@@ -108,7 +110,9 @@ Write-Host "  created $($sections.Count) sections"
 
 $added = 0
 foreach ($wp in $plan) {
-  $props = @{ layout = $Variant; showTitle = $true }
+  # per-web-part variant override wins over the site-wide base variant
+  $wpVariant = if ($wp.Variant) { $wp.Variant } else { $Variant }
+  $props = @{ layout = $wpVariant; showTitle = $true }
   if ($Card) { $props.showBorder = $true; $props.backgroundMode = 'white' }
   if ($RealData) {
     if ($wp.List) { $props.useDemoData = $false; $props.listTitle = $wp.List }
