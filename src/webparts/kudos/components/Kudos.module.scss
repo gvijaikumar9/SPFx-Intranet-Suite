@@ -1,0 +1,174 @@
+@import '../../shared/layoutVariants';
+
+.kudos {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a; // muted rose for errors, never harsh red (suite rule)
+
+  .heading {
+    margin: 0 0 4px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .subheading {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .demoNote {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+
+  .giveCard,
+  .wall {
+    padding: var(--wp-card-pad, 20px);
+    border: var(--wp-card-border, 1px solid rgba(128, 128, 128, 0.25));
+    border-radius: var(--wp-card-radius, 10px);
+    background: var(--wp-card-bg, rgba(255, 255, 255, 0.6));
+    box-shadow: var(--wp-card-shadow, none);
+  }
+
+  .giveCard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  .textarea {
+    font: inherit;
+    padding: 8px 10px;
+    border: 1px solid var(--inputBorder, rgba(128, 128, 128, 0.4));
+    border-radius: 6px;
+    background: var(--inputBg, rgba(255, 255, 255, 0.9));
+    color: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 64px;
+  }
+
+  .textarea:focus,
+  .button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .button {
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    cursor: pointer;
+  }
+
+  .button:hover:not(:disabled) {
+    filter: brightness(0.94);
+  }
+
+  .button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .success {
+    margin: 10px 0 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--good, #107c41);
+  }
+
+  .error,
+  .fieldError {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .avatar {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    object-fit: cover;
+  }
+
+  .itemBody {
+    min-width: 0;
+  }
+
+  .itemLine {
+    margin: 0 0 2px 0;
+    font-size: 14px;
+  }
+
+  .from,
+  .to {
+    font-weight: 600;
+  }
+
+  .msg {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+}

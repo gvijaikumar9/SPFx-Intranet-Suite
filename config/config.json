@@ -1,0 +1,90 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "announcements-ticker-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/announcementsTicker/AnnouncementsTickerWebPart.js",
+          "manifest": "./src/webparts/announcementsTicker/AnnouncementsTickerWebPart.manifest.json"
+        }
+      ]
+    },
+    "raise-ticket-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/raiseTicket/RaiseTicketWebPart.js",
+          "manifest": "./src/webparts/raiseTicket/RaiseTicketWebPart.manifest.json"
+        }
+      ]
+    },
+    "kudos-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/kudos/KudosWebPart.js",
+          "manifest": "./src/webparts/kudos/KudosWebPart.manifest.json"
+        }
+      ]
+    },
+    "employee-spotlight-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/employeeSpotlight/EmployeeSpotlightWebPart.js",
+          "manifest": "./src/webparts/employeeSpotlight/EmployeeSpotlightWebPart.manifest.json"
+        }
+      ]
+    },
+    "quick-links-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/quickLinks/QuickLinksWebPart.js",
+          "manifest": "./src/webparts/quickLinks/QuickLinksWebPart.manifest.json"
+        }
+      ]
+    },
+    "kpi-tiles-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/kpiTiles/KpiTilesWebPart.js",
+          "manifest": "./src/webparts/kpiTiles/KpiTilesWebPart.manifest.json"
+        }
+      ]
+    },
+    "faq-accordion-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/faqAccordion/FaqAccordionWebPart.js",
+          "manifest": "./src/webparts/faqAccordion/FaqAccordionWebPart.manifest.json"
+        }
+      ]
+    },
+    "events-list-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/eventsList/EventsListWebPart.js",
+          "manifest": "./src/webparts/eventsList/EventsListWebPart.manifest.json"
+        }
+      ]
+    },
+    "image-gallery-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/imageGallery/ImageGalleryWebPart.js",
+          "manifest": "./src/webparts/imageGallery/ImageGalleryWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "AnnouncementsTickerWebPartStrings": "lib/webparts/announcementsTicker/loc/{locale}.js",
+    "RaiseTicketWebPartStrings": "lib/webparts/raiseTicket/loc/{locale}.js",
+    "KudosWebPartStrings": "lib/webparts/kudos/loc/{locale}.js",
+    "EmployeeSpotlightWebPartStrings": "lib/webparts/employeeSpotlight/loc/{locale}.js",
+    "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js",
+    "KpiTilesWebPartStrings": "lib/webparts/kpiTiles/loc/{locale}.js",
+    "FaqAccordionWebPartStrings": "lib/webparts/faqAccordion/loc/{locale}.js",
+    "EventsListWebPartStrings": "lib/webparts/eventsList/loc/{locale}.js",
+    "ImageGalleryWebPartStrings": "lib/webparts/imageGallery/loc/{locale}.js"
+  }
+}

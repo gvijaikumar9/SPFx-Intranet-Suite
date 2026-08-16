@@ -1,0 +1,87 @@
+@import '../../shared/layoutVariants';
+
+.kpiTiles {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+  --cols: 4;
+
+  .heading {
+    margin: 0 0 4px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .error {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px;
+    border: var(--wp-card-border, 1px solid rgba(128, 128, 128, 0.25));
+    border-radius: var(--wp-card-radius, 10px);
+    background: var(--wp-card-bg, rgba(255, 255, 255, 0.6));
+    box-shadow: var(--wp-card-shadow, none);
+  }
+
+  .value {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .label {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  .trend {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .up {
+    color: #107c41;
+  }
+
+  .down {
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .flat {
+    opacity: 0.7;
+  }
+}

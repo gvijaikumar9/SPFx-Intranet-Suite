@@ -1,0 +1,32 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "c4e6a8b0-2d3f-4a5c-9b7e-8f1d3c5b7a26",
+  "alias": "ImageGalleryWebPart",
+  "componentType": "WebPart",
+
+  "version": "*",
+  "manifestVersion": 2,
+
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "b1e7f3a2-9c4d-4e8b-a1f2-3d6c0e5a7b90",
+    "group": { "default": "Intranet Suite" },
+    "title": { "default": "Image Gallery" },
+    "description": { "default": "A photo grid that shows images from a SharePoint document library." },
+    "officeFabricIconFontName": "Photo2",
+    "properties": {
+      "title": "Gallery",
+      "layout": "card",
+      "columns": 4,
+      "showTitle": true,
+      "showBorder": false,
+      "backgroundMode": "transparent",
+      "backgroundColor": "#eef3f8",
+      "listTitle": "",
+      "useDemoData": true
+    }
+  }]
+}

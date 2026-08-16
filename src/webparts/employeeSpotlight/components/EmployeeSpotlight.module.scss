@@ -1,0 +1,176 @@
+@import '../../shared/layoutVariants';
+
+.spotlight {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a; // muted rose for errors, never harsh red (suite rule)
+
+  .heading {
+    margin: 0 0 4px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .error {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .card {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: var(--wp-card-pad, 20px);
+    border: var(--wp-card-border, 1px solid rgba(128, 128, 128, 0.25));
+    border-radius: var(--wp-card-radius, 12px);
+    background: var(--wp-card-bg, rgba(255, 255, 255, 0.6));
+    box-shadow: var(--wp-card-shadow, none);
+  }
+
+  .avatar {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    object-fit: cover;
+  }
+
+  .avatarBig {
+    width: 84px;
+    height: 84px;
+    font-size: 26px;
+  }
+
+  .cardBody {
+    min-width: 0;
+  }
+
+  .eyebrow {
+    margin: 0 0 2px 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .name {
+    margin: 0 0 8px 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .citation {
+    margin: 8px 0 0 0;
+    font-size: 14px;
+    font-style: italic;
+    opacity: 0.9;
+    background: rgba(128, 128, 128, 0.08);
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  // Bold = centered spotlight hero: large photo on top, centered text, accent bar by the title.
+  &.layoutBold {
+    .heading {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .heading::before {
+      content: '';
+      width: 4px;
+      height: 1em;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    .card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .avatarBig {
+      width: 104px;
+      height: 104px;
+      font-size: 32px;
+    }
+
+    .cardBody {
+      width: 100%;
+    }
+
+    .name {
+      font-size: 24px;
+    }
+  }
+
+  .past {
+    margin-top: 16px;
+  }
+
+  .pastLabel {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+
+  .pastList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    border: 1px solid var(--cardBorder, rgba(128, 128, 128, 0.25));
+    border-radius: 999px;
+  }
+
+  .chipText {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .chipName {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .chipMonth {
+    font-size: 11px;
+    opacity: 0.65;
+  }
+}

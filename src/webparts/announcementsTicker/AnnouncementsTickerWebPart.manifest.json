@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "4fd3e3e4-8b14-4e05-8f5b-34207a959a92",
+  "alias": "AnnouncementsTickerWebPart",
+  "componentType": "WebPart",
+
+  // The "*" signifies that the version should be taken from the package.json
+  "version": "*",
+  "manifestVersion": 2,
+
+  // If true, the component can only be installed on sites where Custom Script is allowed.
+  // Components that allow authors to embed arbitrary script code should set this to true.
+  // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "b1e7f3a2-9c4d-4e8b-a1f2-3d6c0e5a7b90", // custom group so all suite web parts sit together
+    "group": { "default": "Intranet Suite" },
+    "title": { "default": "Announcements Ticker" },
+    "description": { "default": "A rotating band of announcements with severity levels, backed by a SharePoint list." },
+    "officeFabricIconFontName": "Megaphone",
+    "properties": {
+      "label": "Alerts",
+      "layout": "card",
+      "showTitle": true,
+      "showBorder": false,
+      "backgroundMode": "transparent",
+      "backgroundColor": "#eef3f8",
+      "listTitle": "",
+      "messageField": "Title",
+      "severityField": "",
+      "linkField": "",
+      "maxItems": 8,
+      "rotateSeconds": 6,
+      "showControls": true,
+      "useDemoData": true
+    }
+  }]
+}

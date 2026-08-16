@@ -1,0 +1,223 @@
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--ticker-accent, #0f6cbd);
+  box-shadow: 0 1.6px 3.6px rgba(0, 0, 0, 0.13), 0 0.3px 0.9px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex: none;
+}
+
+.megaphone {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.labelText {
+  opacity: 0.95;
+}
+
+.stage {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  height: 22px;
+  overflow: hidden;
+}
+
+.msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.text,
+.link {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.link {
+  color: #ffffff;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.pill {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.pillWarning {
+  background: #ffb900;
+  color: #3b2c00;
+}
+
+.pillCritical {
+  background: #d13438;
+  color: #ffffff;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.arrow {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.32);
+  }
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+}
+
+.dotOn {
+  background: #ffffff;
+  width: 18px;
+  border-radius: 100px;
+}
+
+.state {
+  flex: 1 1 auto;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.arrow:focus-visible,
+.dot:focus-visible,
+.link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msg {
+    animation: none;
+  }
+}
+
+// Layout variants. The band is filled-accent by default; Minimal switches to a
+// light inline strip. Applied as a modifier class on the .ticker root.
+.ticker {
+  &.layoutCard {
+    border-radius: 10px;
+  }
+
+  &.layoutBold {
+    border-radius: 14px;
+    padding: 16px 22px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  }
+
+  &.layoutCompact {
+    padding: 8px 14px;
+    border-radius: 6px;
+    gap: 10px;
+
+    .text,
+    .link {
+      font-size: 13px;
+    }
+
+    .badge {
+      font-size: 11px;
+    }
+
+    .stage,
+    .msg {
+      height: 20px;
+    }
+  }
+
+  &.layoutMinimal {
+    background: color-mix(in srgb, var(--ticker-accent, #0f6cbd) 12%, transparent);
+    color: inherit;
+    box-shadow: none;
+    border-radius: 6px;
+    border-left: 4px solid var(--ticker-accent, #0f6cbd);
+
+    .link {
+      color: var(--ticker-accent, #0f6cbd);
+    }
+
+    .arrow {
+      background: color-mix(in srgb, var(--ticker-accent, #0f6cbd) 14%, transparent);
+      color: var(--ticker-accent, #0f6cbd);
+
+      &:hover {
+        background: color-mix(in srgb, var(--ticker-accent, #0f6cbd) 24%, transparent);
+      }
+    }
+
+    .dot {
+      background: color-mix(in srgb, var(--ticker-accent, #0f6cbd) 35%, transparent);
+    }
+
+    .dotOn {
+      background: var(--ticker-accent, #0f6cbd);
+    }
+  }
+}
