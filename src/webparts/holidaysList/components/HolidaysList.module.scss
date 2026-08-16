@@ -1,0 +1,104 @@
+@import '../../shared/layoutVariants';
+
+.holidays {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+
+  .heading {
+    margin: 0 0 8px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .error {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: var(--wp-card-border, 1px solid rgba(128, 128, 128, 0.25));
+    border-radius: var(--wp-card-radius, 10px);
+    background: var(--wp-card-bg, rgba(255, 255, 255, 0.6));
+    box-shadow: var(--wp-card-shadow, none);
+  }
+
+  .date {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: var(--accent);
+    line-height: 1;
+  }
+
+  .day {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .month {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  .body {
+    min-width: 0;
+  }
+
+  .name {
+    margin: 0 0 2px 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .meta {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.75;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .region {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.16);
+    font-size: 11px;
+    font-weight: 600;
+  }
+}

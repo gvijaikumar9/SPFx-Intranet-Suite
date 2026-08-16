@@ -157,6 +157,34 @@ if (-not (Get-PnPList -Identity 'IntranetGallery' -ErrorAction SilentlyContinue)
 }
 else { Write-Host "  'IntranetGallery' exists" -ForegroundColor DarkGray }
 
+# ============================ NEWS (carousel) ============================
+New-IntranetList -Title 'News' -Fields @(
+    @{ Display = 'Summary';  Internal = 'Summary';   Type = 'Note' },
+    @{ Display = 'Category'; Internal = 'Category';  Type = 'Text' },
+    @{ Display = 'Image';    Internal = 'NewsImage'; Type = 'URL' },
+    @{ Display = 'Link';     Internal = 'NewsLink';  Type = 'URL' }
+)
+Add-Sample -List 'News' -Rows @(
+    @{ Title = 'Platform uptime hits 99.98% this quarter'; Summary = 'Engineering and operations share how the reliability program paid off.'; Category = 'Company news' },
+    @{ Title = 'Meet the 2026 Innovation Award winners'; Summary = 'Five teams recognised for standout customer impact this year.'; Category = 'People' },
+    @{ Title = 'The new HQ collaboration floors open Monday'; Summary = 'Book a tour and see what changed on levels 4 through 6.'; Category = 'Workplace' }
+)
+
+# ============================ HOLIDAYS ============================
+New-IntranetList -Title 'Holidays' -Fields @(
+    @{ Display = 'Date';   Internal = 'HolidayDate'; Type = 'DateTime' },
+    @{ Display = 'Region'; Internal = 'Region';      Type = 'Text' }
+)
+Add-Sample -List 'Holidays' -Rows @(
+    @{ Title = 'Thanksgiving';  HolidayDate = (Get-Date).AddDays(20); Region = 'US' },
+    @{ Title = 'Diwali';        HolidayDate = (Get-Date).AddDays(35); Region = 'IN' },
+    @{ Title = 'Christmas Day'; HolidayDate = (Get-Date).AddDays(60); Region = 'Global' }
+)
+
+# ============================ POLL VOTES (poll web part) ============================
+# Each vote is one item whose Title is the chosen option. Title column is enough.
+New-IntranetList -Title 'PollVotes' -Fields @()
+
 Write-Host "`nDone. Lists provisioned on $Url" -ForegroundColor Cyan
-Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery' } |
+Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes' } |
     Select-Object Title, ItemCount | Format-Table -AutoSize

@@ -73,6 +73,62 @@
           "manifest": "./src/webparts/imageGallery/ImageGalleryWebPart.manifest.json"
         }
       ]
+    },
+    "news-carousel-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/newsCarousel/NewsCarouselWebPart.js",
+          "manifest": "./src/webparts/newsCarousel/NewsCarouselWebPart.manifest.json"
+        }
+      ]
+    },
+    "event-countdown-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/eventCountdown/EventCountdownWebPart.js",
+          "manifest": "./src/webparts/eventCountdown/EventCountdownWebPart.manifest.json"
+        }
+      ]
+    },
+    "holidays-list-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/holidaysList/HolidaysListWebPart.js",
+          "manifest": "./src/webparts/holidaysList/HolidaysListWebPart.manifest.json"
+        }
+      ]
+    },
+    "poll-survey-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/pollSurvey/PollSurveyWebPart.js",
+          "manifest": "./src/webparts/pollSurvey/PollSurveyWebPart.manifest.json"
+        }
+      ]
+    },
+    "people-directory-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/peopleDirectory/PeopleDirectoryWebPart.js",
+          "manifest": "./src/webparts/peopleDirectory/PeopleDirectoryWebPart.manifest.json"
+        }
+      ]
+    },
+    "content-rollup-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/contentRollup/ContentRollupWebPart.js",
+          "manifest": "./src/webparts/contentRollup/ContentRollupWebPart.manifest.json"
+        }
+      ]
+    },
+    "org-chart-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/orgChart/OrgChartWebPart.js",
+          "manifest": "./src/webparts/orgChart/OrgChartWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -85,6 +141,13 @@
     "KpiTilesWebPartStrings": "lib/webparts/kpiTiles/loc/{locale}.js",
     "FaqAccordionWebPartStrings": "lib/webparts/faqAccordion/loc/{locale}.js",
     "EventsListWebPartStrings": "lib/webparts/eventsList/loc/{locale}.js",
-    "ImageGalleryWebPartStrings": "lib/webparts/imageGallery/loc/{locale}.js"
+    "ImageGalleryWebPartStrings": "lib/webparts/imageGallery/loc/{locale}.js",
+    "NewsCarouselWebPartStrings": "lib/webparts/newsCarousel/loc/{locale}.js",
+    "EventCountdownWebPartStrings": "lib/webparts/eventCountdown/loc/{locale}.js",
+    "HolidaysListWebPartStrings": "lib/webparts/holidaysList/loc/{locale}.js",
+    "PollSurveyWebPartStrings": "lib/webparts/pollSurvey/loc/{locale}.js",
+    "PeopleDirectoryWebPartStrings": "lib/webparts/peopleDirectory/loc/{locale}.js",
+    "ContentRollupWebPartStrings": "lib/webparts/contentRollup/loc/{locale}.js",
+    "OrgChartWebPartStrings": "lib/webparts/orgChart/loc/{locale}.js"
   }
 }

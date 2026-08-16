@@ -1,0 +1,157 @@
+@import '../../shared/layoutVariants';
+
+.news {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+
+  .heading {
+    margin: 0 0 8px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .error {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .stage {
+    position: relative;
+    border-radius: var(--wp-card-radius, 12px);
+    overflow: hidden;
+    box-shadow: var(--wp-card-shadow, none);
+  }
+
+  .slide {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    animation: fade 0.4s ease;
+  }
+
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.12) 55%, rgba(0, 0, 0, 0));
+  }
+
+  .cap {
+    position: relative;
+    padding: 22px 26px;
+    max-width: 640px;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .slideTitle {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .slideLink {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .slideLink:hover {
+    text-decoration: underline;
+  }
+
+  .summary {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.92;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    font-size: 22px;
+    line-height: 1;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+  }
+
+  .arrow:hover {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .prev { left: 12px; }
+  .next { right: 12px; }
+
+  .dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+  }
+
+  .dotOn {
+    width: 18px;
+    border-radius: 100px;
+    background: #fff;
+  }
+
+  .arrow:focus-visible,
+  .dot:focus-visible,
+  .slideLink:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide { animation: none; }
+  }
+}

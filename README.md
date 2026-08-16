@@ -9,20 +9,29 @@ SPFx lazy-loads each web part's bundle, so an unused web part costs a page nothi
 
 ## Web parts
 
-| Web part | What it does | List it reads |
+| Web part | What it does | Source |
 | --- | --- | --- |
-| **Announcements Ticker** | A rotating band of announcements with Info / Warning / Critical severity. | Announcements |
-| **Raise a Ticket** | A help-request form that writes to a list, plus the person's recent tickets. | Tickets |
-| **Kudos** | A recognition wall plus a people-picker form to thank a colleague. | Kudos |
-| **Employee of the Month** | A spotlight card with the person's profile photo, month and citation. | EmployeeOfMonth |
-| **Quick Links** | A grid of shortcut tiles with icons. | QuickLinks |
-| **KPI Tiles** | A row of key-number tiles with a trend arrow and delta. | KPIs |
-| **FAQ Accordion** | An expandable list of questions and answers. | FAQ |
-| **Upcoming Events** | Date-badged cards for events from today onward. | Events (calendar) |
-| **Image Gallery** | A photo grid from a document library. | IntranetGallery |
+| **Announcements Ticker** | A rotating band of announcements with Info / Warning / Critical severity. | Announcements list |
+| **Raise a Ticket** | A help-request form that writes to a list, plus the person's recent tickets. | Tickets list |
+| **Kudos** | A recognition wall plus a people-picker form to thank a colleague. | Kudos list |
+| **Employee of the Month** | A spotlight card with the person's profile photo, month and citation. | EmployeeOfMonth list |
+| **Quick Links** | A grid of shortcut tiles with icons. | QuickLinks list |
+| **KPI Tiles** | A row of key-number tiles with a trend arrow and delta. | KPIs list |
+| **FAQ Accordion** | An expandable list of questions and answers. | FAQ list |
+| **Upcoming Events** | Date-badged cards for events from today onward. | Events calendar |
+| **Image Gallery** | A photo grid with an in-page lightbox. | IntranetGallery library |
+| **News Carousel** | A rotating hero of featured stories. | News list |
+| **Event Countdown** | A live countdown to an event you set. | Property pane |
+| **Upcoming Holidays** | Date-badged upcoming public holidays. | Holidays list |
+| **Poll** | A one-question poll with live result bars. | PollVotes list |
+| **People Directory** | Search your organisation for a colleague. | People search |
+| **Content Rollup** | Recent news rolled up from across your sites. | Search |
+| **Org Chart** | Your manager, you, and your direct reports. | User profiles |
 
 Every web part ships with sample data on by default, so it renders the moment you
-drop it on a page. Point it at a list when you are ready.
+drop it on a page. Point it at a list, or turn on live data, when you are ready.
+People Directory, Content Rollup, and Org Chart use the site's own search and user
+profile services, so they need no extra admin consent.
 
 ## Shared options on every web part
 

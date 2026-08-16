@@ -1,0 +1,115 @@
+@import '../../shared/layoutVariants';
+
+.poll {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+
+  .heading {
+    margin: 0 0 4px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .error {
+    margin: 6px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .question {
+    margin: 0 0 14px 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .optionBtn {
+    font: inherit;
+    text-align: left;
+    padding: 11px 14px;
+    border-radius: var(--wp-card-radius, 8px);
+    border: 1px solid var(--inputBorder, rgba(128, 128, 128, 0.4));
+    background: var(--wp-card-bg, rgba(255, 255, 255, 0.6));
+    color: inherit;
+    cursor: pointer;
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+
+  .optionBtn:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  .optionBtn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .optionBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .results {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .rowHead {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+
+  .optName {
+    font-weight: 600;
+  }
+
+  .optPct {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+  }
+
+  .bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.18);
+    overflow: hidden;
+  }
+
+  .fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  .total {
+    margin: 2px 0 0 0;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}

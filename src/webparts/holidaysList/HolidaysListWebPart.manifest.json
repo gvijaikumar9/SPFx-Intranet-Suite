@@ -1,0 +1,32 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "a7b9c1d3-5e6f-4b8a-9d4c-1f2e3a5b7c59",
+  "alias": "HolidaysListWebPart",
+  "componentType": "WebPart",
+
+  "version": "*",
+  "manifestVersion": 2,
+
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
+  "supportsThemeVariants": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "b1e7f3a2-9c4d-4e8b-a1f2-3d6c0e5a7b90",
+    "group": { "default": "Intranet Suite" },
+    "title": { "default": "Upcoming Holidays" },
+    "description": { "default": "A list of upcoming public holidays, from a SharePoint list." },
+    "officeFabricIconFontName": "Vacation",
+    "properties": {
+      "title": "Upcoming holidays",
+      "layout": "card",
+      "maxItems": 6,
+      "showTitle": true,
+      "showBorder": false,
+      "backgroundMode": "transparent",
+      "backgroundColor": "#eef3f8",
+      "listTitle": "",
+      "useDemoData": true
+    }
+  }]
+}
