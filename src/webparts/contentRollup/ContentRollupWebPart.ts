@@ -97,10 +97,11 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
         this._items = rows.map((r: { Cells?: Array<{ Key: string; Value: string }> }, i: number): IRollupItem => {
           const d: Record<string, string> = {};
           (r.Cells || []).forEach((c) => { d[c.Key] = c.Value; });
+          const path = d.Path || '';
           return {
             id: i,
             title: d.Title || '',
-            path: d.Path || undefined,
+            path: /^(https?:|#|\/)/i.test(path) ? path : undefined, // safe schemes only
             site: d.SiteTitle || undefined,
             date: d.Write || undefined
           };
