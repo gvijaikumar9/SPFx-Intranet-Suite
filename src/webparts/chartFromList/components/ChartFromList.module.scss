@@ -1,0 +1,73 @@
+@import '../../shared/layoutVariants';
+
+.chart {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+
+  .heading {
+    margin: 0 0 8px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .muted {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .error {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--wp-soft-error, #a8636a);
+  }
+
+  .plot {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  // Recessive axis line.
+  .axis {
+    stroke: rgba(128, 128, 128, 0.35);
+    stroke-width: 1;
+  }
+
+  .bar {
+    cursor: default;
+  }
+
+  .fill {
+    fill: var(--accent);
+    transition: opacity 0.12s ease;
+  }
+
+  .bar:hover .fill {
+    opacity: 0.82;
+  }
+
+  // Value labels use ink, not the series colour.
+  .val {
+    fill: var(--ink, #242424);
+    font: 700 12px "Segoe UI", sans-serif;
+    font-variant-numeric: tabular-nums;
+    text-anchor: middle;
+  }
+
+  .cat {
+    fill: var(--muted, #605e5c);
+    font: 400 11px "Segoe UI", sans-serif;
+    text-anchor: middle;
+  }
+}

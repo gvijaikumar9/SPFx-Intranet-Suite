@@ -185,6 +185,18 @@ Add-Sample -List 'Holidays' -Rows @(
 # Each vote is one item whose Title is the chosen option. Title column is enough.
 New-IntranetList -Title 'PollVotes' -Fields @()
 
+# ============================ CELEBRATIONS (birthdays / anniversaries) ============================
+New-IntranetList -Title 'Celebrations' -Fields @(
+    @{ Display = 'Date';   Internal = 'CelebrationDate'; Type = 'DateTime' },
+    @{ Display = 'Type';   Internal = 'CelebrationType'; Type = 'Choice'; Choices = @('Birthday', 'Work anniversary') },
+    @{ Display = 'Person'; Internal = 'Person';          Type = 'User' }
+)
+Add-Sample -List 'Celebrations' -Rows @(
+    @{ Title = 'Priya Nair';     CelebrationDate = (Get-Date).AddDays(5);  CelebrationType = 'Birthday' },
+    @{ Title = 'Marcus Lee';     CelebrationDate = (Get-Date).AddDays(12); CelebrationType = 'Work anniversary' },
+    @{ Title = 'Elena Petrova';  CelebrationDate = (Get-Date).AddDays(24); CelebrationType = 'Birthday' }
+)
+
 Write-Host "`nDone. Lists provisioned on $Url" -ForegroundColor Cyan
-Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes' } |
+Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations' } |
     Select-Object Title, ItemCount | Format-Table -AutoSize

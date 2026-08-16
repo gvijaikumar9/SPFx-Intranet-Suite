@@ -63,23 +63,27 @@ $plan = @(
   @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
 
   # main column (2/3)
-  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1; List = 'News' },
-  @{ Title = 'KPI Tiles';              Sec = 2; Col = 1; Order = 2; List = 'KPIs' },
-  @{ Title = 'Kudos';                  Sec = 2; Col = 1; Order = 3; List = 'Kudos' },
-  @{ Title = 'Raise a Ticket';         Sec = 2; Col = 1; Order = 4; List = 'Tickets' },
-  @{ Title = 'FAQ Accordion';          Sec = 2; Col = 1; Order = 5; List = 'FAQ' },
-  @{ Title = 'Poll';                   Sec = 2; Col = 1; Order = 6; List = 'PollVotes' },
-  @{ Title = 'Content Rollup';         Sec = 2; Col = 1; Order = 7; LiveNoList = $true },
-  @{ Title = 'Image Gallery';          Sec = 2; Col = 1; Order = 8; List = 'IntranetGallery' },
+  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1;  List = 'News' },
+  @{ Title = 'Tabs';                   Sec = 2; Col = 1; Order = 2 },
+  @{ Title = 'KPI Tiles';              Sec = 2; Col = 1; Order = 3;  List = 'KPIs' },
+  @{ Title = 'Chart from a List';      Sec = 2; Col = 1; Order = 4;  List = 'Tickets'; Extra = @{ categoryField = 'TicketStatus' } },
+  @{ Title = 'Kudos';                  Sec = 2; Col = 1; Order = 5;  List = 'Kudos' },
+  @{ Title = 'Raise a Ticket';         Sec = 2; Col = 1; Order = 6;  List = 'Tickets' },
+  @{ Title = 'FAQ Accordion';          Sec = 2; Col = 1; Order = 7;  List = 'FAQ' },
+  @{ Title = 'Poll';                   Sec = 2; Col = 1; Order = 8;  List = 'PollVotes' },
+  @{ Title = 'Content Rollup';         Sec = 2; Col = 1; Order = 9;  LiveNoList = $true },
+  @{ Title = 'Image Gallery';          Sec = 2; Col = 1; Order = 10; List = 'IntranetGallery' },
 
   # sidebar (1/3)
-  @{ Title = 'Employee of the Month';  Sec = 2; Col = 2; Order = 1; List = 'EmployeeOfMonth' },
-  @{ Title = 'Upcoming Events';        Sec = 2; Col = 2; Order = 2; List = 'Events' },
-  @{ Title = 'Quick Links';            Sec = 2; Col = 2; Order = 3; List = 'QuickLinks' },
-  @{ Title = 'Event Countdown';        Sec = 2; Col = 2; Order = 4 },
-  @{ Title = 'Upcoming Holidays';      Sec = 2; Col = 2; Order = 5; List = 'Holidays' },
-  @{ Title = 'Org Chart';              Sec = 2; Col = 2; Order = 6; LiveNoList = $true },
-  @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 7; LiveNoList = $true }
+  @{ Title = 'Weather';                Sec = 2; Col = 2; Order = 1;  Extra = @{ location = 'London' } },
+  @{ Title = 'Employee of the Month';  Sec = 2; Col = 2; Order = 2;  List = 'EmployeeOfMonth' },
+  @{ Title = 'Upcoming Events';        Sec = 2; Col = 2; Order = 3;  List = 'Events' },
+  @{ Title = 'Celebrations';           Sec = 2; Col = 2; Order = 4;  List = 'Celebrations' },
+  @{ Title = 'Quick Links';            Sec = 2; Col = 2; Order = 5;  List = 'QuickLinks' },
+  @{ Title = 'Event Countdown';        Sec = 2; Col = 2; Order = 6 },
+  @{ Title = 'Upcoming Holidays';      Sec = 2; Col = 2; Order = 7;  List = 'Holidays' },
+  @{ Title = 'Org Chart';              Sec = 2; Col = 2; Order = 8;  LiveNoList = $true },
+  @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 9;  LiveNoList = $true }
 )
 
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.

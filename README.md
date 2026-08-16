@@ -27,6 +27,10 @@ SPFx lazy-loads each web part's bundle, so an unused web part costs a page nothi
 | **People Directory** | Search your organisation for a colleague. | People search |
 | **Content Rollup** | Recent news rolled up from across your sites. | Search |
 | **Org Chart** | Your manager, you, and your direct reports. | User profiles |
+| **Chart from a List** | A bar chart built from a list, grouped by a column. | Any list |
+| **Celebrations** | Upcoming birthdays and work anniversaries. | Celebrations list |
+| **Tabs** | A tabbed container grouping a list's items into tabs. | Any list |
+| **Weather** | Current weather and a 3-day forecast for a location. | open-meteo API |
 
 Every web part ships with sample data on by default, so it renders the moment you
 drop it on a page. Point it at a list, or turn on live data, when you are ready.

@@ -1,0 +1,71 @@
+@import '../../shared/layoutVariants';
+
+.weather {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+
+  .heading {
+    margin: 0 0 8px 0;
+    font-size: var(--wp-heading-size, 20px);
+    font-weight: var(--wp-heading-weight, 600);
+  }
+
+  .demoNote { margin: 0 0 12px 0; font-size: 12px; opacity: 0.75; }
+  .muted { font-size: 13px; opacity: 0.7; margin: 0; }
+  .error { margin: 4px 0 0 0; font-size: 12px; color: var(--wp-soft-error, #a8636a); }
+
+  .current {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .icon { font-size: 44px; line-height: 1; }
+
+  .now { min-width: 0; }
+
+  .temp {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cond {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  .place {
+    margin: 0 0 0 auto;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .forecast {
+    list-style: none;
+    margin: 16px 0 0 0;
+    padding: 12px 0 0 0;
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+    display: flex;
+    gap: 10px;
+  }
+
+  .fday {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .fname { font-size: 12px; opacity: 0.75; }
+  .ficon { font-size: 22px; line-height: 1; }
+  .frange { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .fmin { opacity: 0.6; }
+}

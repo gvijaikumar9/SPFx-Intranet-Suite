@@ -129,6 +129,38 @@
           "manifest": "./src/webparts/orgChart/OrgChartWebPart.manifest.json"
         }
       ]
+    },
+    "chart-from-list-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/chartFromList/ChartFromListWebPart.js",
+          "manifest": "./src/webparts/chartFromList/ChartFromListWebPart.manifest.json"
+        }
+      ]
+    },
+    "celebrations-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/celebrations/CelebrationsWebPart.js",
+          "manifest": "./src/webparts/celebrations/CelebrationsWebPart.manifest.json"
+        }
+      ]
+    },
+    "tabs-container-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tabsContainer/TabsContainerWebPart.js",
+          "manifest": "./src/webparts/tabsContainer/TabsContainerWebPart.manifest.json"
+        }
+      ]
+    },
+    "weather-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/weather/WeatherWebPart.js",
+          "manifest": "./src/webparts/weather/WeatherWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -148,6 +180,10 @@
     "PollSurveyWebPartStrings": "lib/webparts/pollSurvey/loc/{locale}.js",
     "PeopleDirectoryWebPartStrings": "lib/webparts/peopleDirectory/loc/{locale}.js",
     "ContentRollupWebPartStrings": "lib/webparts/contentRollup/loc/{locale}.js",
-    "OrgChartWebPartStrings": "lib/webparts/orgChart/loc/{locale}.js"
+    "OrgChartWebPartStrings": "lib/webparts/orgChart/loc/{locale}.js",
+    "ChartFromListWebPartStrings": "lib/webparts/chartFromList/loc/{locale}.js",
+    "CelebrationsWebPartStrings": "lib/webparts/celebrations/loc/{locale}.js",
+    "TabsContainerWebPartStrings": "lib/webparts/tabsContainer/loc/{locale}.js",
+    "WeatherWebPartStrings": "lib/webparts/weather/loc/{locale}.js"
   }
 }
