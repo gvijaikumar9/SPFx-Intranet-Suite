@@ -76,11 +76,12 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
       return;
     }
 
+    // No selectproperties or sortlist: an unmapped managed property (SiteTitle is not
+    // mapped on every tenant) makes the search query return HTTP 500. The default
+    // result set still includes Title, Path and Write, which is all we display.
     const q = encodeURIComponent((this.properties.queryText || 'PromotedState:2').replace(/'/g, "''"));
-    const select = encodeURIComponent('Title,Path,SiteTitle,Write');
-    const sort = encodeURIComponent('Write:descending');
     const url = `${this.context.pageContext.web.absoluteUrl}`
-      + `/_api/search/query?querytext='${q}'&selectproperties='${select}'&rowlimit=${top}&sortlist='${sort}'&clienttype='ContentSearchRegular'`;
+      + `/_api/search/query?querytext='${q}'&rowlimit=${top}`;
 
     try {
       const res: SPHttpClientResponse = await this.context.spHttpClient.get(url, SPHttpClient.configurations.v1);

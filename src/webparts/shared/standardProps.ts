@@ -45,10 +45,12 @@ export function computeFrameStyle(p: Partial<IStandardWebPartProps>, accent: str
   }
   const style: React.CSSProperties = {};
   if (bg) { style.background = bg; }
-  if (p.showBorder) { style.border = '1px solid rgba(128, 128, 128, 0.25)'; }
+  if (p.showBorder) { style.border = '1px solid rgba(128, 128, 128, 0.16)'; }
   if (bg || p.showBorder) {
     style.borderRadius = '10px';
     style.padding = '16px';
+    // A subtle card shadow (matches the prototype's soft-floating cards).
+    style.boxShadow = '0 1.6px 3.6px rgba(0, 0, 0, 0.08), 0 0.3px 0.9px rgba(0, 0, 0, 0.05)';
   }
   return style;
 }

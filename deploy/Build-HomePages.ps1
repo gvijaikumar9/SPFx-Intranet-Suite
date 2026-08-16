@@ -31,7 +31,8 @@ param(
   [Parameter(Mandatory = $true)][string]$Url,
   [Parameter(Mandatory = $true)][string]$ClientId,
   [ValidateSet('card', 'minimal', 'bold', 'compact')][string]$Variant = 'card',
-  [switch]$RealData
+  [switch]$RealData,
+  [switch]$Card   # prototype look: neutral section backgrounds + white bordered web-part cards
 )
 $ErrorActionPreference = "Stop"
 
@@ -47,39 +48,38 @@ if ($propParam) { Write-Host "  using property parameter: -$propParam" -Foregrou
 else { Write-Host ("  no known property parameter; placement only. Available params: {0}" -f ($wpParams -join ', ')) -ForegroundColor DarkYellow }
 
 # --- section templates, top to bottom ---
-# NOTE: OneColumnFullWidth only accepts image/hero web parts, so custom web parts
-# use OneColumn (still spans the content width) for the top bands.
+# Cascade prototype layout: a full-width ticker, then a 2/3 main column + 1/3 sidebar.
+# TwoColumnLeft = wide left column (2/3, main) + narrow right column (1/3, sidebar).
+# If the widths come out reversed on your tenant, swap to 'TwoColumnRight'.
 $sections = @(
-  'OneColumn',           # 1  hero band
-  'OneColumn',           # 2  news hero
-  'OneColumn',           # 3  KPI band
-  'TwoColumn',           # 4  kudos | ticket
-  'ThreeColumn',         # 5  links | employee | events
-  'TwoColumn',           # 6  faq | poll
-  'ThreeColumn',         # 7  countdown | holidays | org
-  'TwoColumn',           # 8  people | rollup
-  'OneColumn'            # 9  gallery
+  'OneColumn',       # 1  announcements ticker, full width
+  'TwoColumnLeft'    # 2  main (col 1, 2/3) + sidebar (col 2, 1/3)
 )
 
-# --- web part placements. List = provisioned list; LiveNoList = has no list but a
-#     live service (turn demo off); Extra = extra properties to set on real data. ---
+# --- web part placements. Multiple web parts in the same Section+Column stack by
+#     Order. List = provisioned list; LiveNoList = live service (turn demo off);
+#     Extra = extra properties to set on real data. ---
 $plan = @(
-  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
-  @{ Title = 'News Carousel';          Sec = 2; Col = 1; List = 'News' },
-  @{ Title = 'KPI Tiles';              Sec = 3; Col = 1; List = 'KPIs' },
-  @{ Title = 'Kudos';                  Sec = 4; Col = 1; List = 'Kudos' },
-  @{ Title = 'Raise a Ticket';         Sec = 4; Col = 2; List = 'Tickets' },
-  @{ Title = 'Quick Links';            Sec = 5; Col = 1; List = 'QuickLinks' },
-  @{ Title = 'Employee of the Month';  Sec = 5; Col = 2; List = 'EmployeeOfMonth' },
-  @{ Title = 'Upcoming Events';        Sec = 5; Col = 3; List = 'Events' },
-  @{ Title = 'FAQ Accordion';          Sec = 6; Col = 1; List = 'FAQ' },
-  @{ Title = 'Poll';                   Sec = 6; Col = 2; List = 'PollVotes' },
-  @{ Title = 'Event Countdown';        Sec = 7; Col = 1 },
-  @{ Title = 'Upcoming Holidays';      Sec = 7; Col = 2; List = 'Holidays' },
-  @{ Title = 'Org Chart';              Sec = 7; Col = 3; LiveNoList = $true },
-  @{ Title = 'People Directory';       Sec = 8; Col = 1; LiveNoList = $true },
-  @{ Title = 'Content Rollup';         Sec = 8; Col = 2; LiveNoList = $true },
-  @{ Title = 'Image Gallery';          Sec = 9; Col = 1; List = 'IntranetGallery' }
+  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
+
+  # main column (2/3)
+  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1; List = 'News' },
+  @{ Title = 'KPI Tiles';              Sec = 2; Col = 1; Order = 2; List = 'KPIs' },
+  @{ Title = 'Kudos';                  Sec = 2; Col = 1; Order = 3; List = 'Kudos' },
+  @{ Title = 'Raise a Ticket';         Sec = 2; Col = 1; Order = 4; List = 'Tickets' },
+  @{ Title = 'FAQ Accordion';          Sec = 2; Col = 1; Order = 5; List = 'FAQ' },
+  @{ Title = 'Poll';                   Sec = 2; Col = 1; Order = 6; List = 'PollVotes' },
+  @{ Title = 'Content Rollup';         Sec = 2; Col = 1; Order = 7; LiveNoList = $true },
+  @{ Title = 'Image Gallery';          Sec = 2; Col = 1; Order = 8; List = 'IntranetGallery' },
+
+  # sidebar (1/3)
+  @{ Title = 'Employee of the Month';  Sec = 2; Col = 2; Order = 1; List = 'EmployeeOfMonth' },
+  @{ Title = 'Upcoming Events';        Sec = 2; Col = 2; Order = 2; List = 'Events' },
+  @{ Title = 'Quick Links';            Sec = 2; Col = 2; Order = 3; List = 'QuickLinks' },
+  @{ Title = 'Event Countdown';        Sec = 2; Col = 2; Order = 4 },
+  @{ Title = 'Upcoming Holidays';      Sec = 2; Col = 2; Order = 5; List = 'Holidays' },
+  @{ Title = 'Org Chart';              Sec = 2; Col = 2; Order = 6; LiveNoList = $true },
+  @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 7; LiveNoList = $true }
 )
 
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.
@@ -90,22 +90,29 @@ try {
   Write-Host ("  (no page to remove: {0})" -f $_.Exception.Message) -ForegroundColor DarkGray
 }
 
-$null = Add-PnPPage -Name "Home.aspx" -LayoutType Article
+# Home layout is header-less (no big title banner), matching the prototype which
+# starts straight into content.
+$null = Add-PnPPage -Name "Home.aspx" -LayoutType Home
 for ($i = 0; $i -lt $sections.Count; $i++) {
-  Add-PnPPageSection -Page "Home.aspx" -SectionTemplate $sections[$i] -Order ($i + 1) | Out-Null
+  if ($Card) {
+    Add-PnPPageSection -Page "Home.aspx" -SectionTemplate $sections[$i] -Order ($i + 1) -ZoneEmphasis 1 | Out-Null
+  } else {
+    Add-PnPPageSection -Page "Home.aspx" -SectionTemplate $sections[$i] -Order ($i + 1) | Out-Null
+  }
 }
 Write-Host "  created $($sections.Count) sections"
 
 $added = 0
 foreach ($wp in $plan) {
   $props = @{ layout = $Variant; showTitle = $true }
+  if ($Card) { $props.showBorder = $true; $props.backgroundMode = 'white' }
   if ($RealData) {
     if ($wp.List) { $props.useDemoData = $false; $props.listTitle = $wp.List }
     elseif ($wp.LiveNoList) { $props.useDemoData = $false }
     if ($wp.Extra) { foreach ($e in $wp.Extra.GetEnumerator()) { $props[$e.Key] = $e.Value } }
   }
   $json = $props | ConvertTo-Json -Compress
-  $args = @{ Page = "Home.aspx"; Component = $wp.Title; Section = $wp.Sec; Column = $wp.Col; ErrorAction = 'Stop' }
+  $args = @{ Page = "Home.aspx"; Component = $wp.Title; Section = $wp.Sec; Column = $wp.Col; Order = $wp.Order; ErrorAction = 'Stop' }
   if ($propParam) { $args[$propParam] = $json }
   try {
     Add-PnPPageWebPart @args | Out-Null
@@ -116,6 +123,8 @@ foreach ($wp in $plan) {
   }
 }
 
+# A home page does not need the per-page comments box.
+try { Set-PnPPage -Identity "Home.aspx" -CommentsEnabled:$false -ErrorAction Stop | Out-Null } catch {}
 Set-PnPPage -Identity "Home.aspx" -Publish | Out-Null
 try { Set-PnPHomePage -RootFolderRelativeUrl "SitePages/Home.aspx" -ErrorAction Stop } catch {}
 
