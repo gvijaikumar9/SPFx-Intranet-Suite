@@ -86,7 +86,7 @@ $plan = @(
   @{ Title = 'Raise a Ticket';         Sec = 2; Col = 1; Order = 6;  List = 'Tickets' },
   @{ Title = 'FAQ Accordion';          Sec = 2; Col = 1; Order = 7;  List = 'FAQ' },
   @{ Title = 'Poll';                   Sec = 2; Col = 1; Order = 8;  List = 'PollVotes' },
-  @{ Title = 'Content Rollup';         Sec = 2; Col = 1; Order = 9;  LiveNoList = $true },
+  @{ Title = 'Content Rollup';         Sec = 2; Col = 1; Order = 9;  List = 'News' },
   @{ Title = 'Image Gallery';          Sec = 2; Col = 1; Order = 10; List = 'IntranetGallery' },
 
   # sidebar (1/3)
