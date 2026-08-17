@@ -11,13 +11,14 @@ const LAYOUT_CLASS: Record<string, string | undefined> = {
   compact: styles.layoutCompact
 };
 
-// Chart geometry (a viewBox that scales to the container).
-const PAD_X = 10;
+// Chart geometry: a fixed-width viewBox that scales to the container width; bars
+// distribute evenly to fill it, so 2 bars and 8 bars both look right.
+const VBW = 560;       // fixed viewBox width
+const PAD_X = 12;
 const PAD_TOP = 22;    // room for value labels
 const PAD_BOTTOM = 46; // room for category labels
 const PLOT_H = 170;
-const BAR_W = 46;
-const GAP = 24;
+const MAX_BAR = 92;    // cap so 1-2 bars are not absurdly wide
 const R = 4;           // rounded top corner radius
 
 function trim(label: string): string {
@@ -36,23 +37,25 @@ const ChartFromList: React.FC<IChartFromListProps> = (props) => {
   let max = 1;
   for (let i = 0; i < n; i++) { if (items[i].value > max) { max = items[i].value; } }
 
-  const width = PAD_X * 2 + n * BAR_W + (n > 0 ? (n - 1) * GAP : 0);
   const height = PAD_TOP + PLOT_H + PAD_BOTTOM;
   const baseY = PAD_TOP + PLOT_H;
+  const slotW = (VBW - PAD_X * 2) / Math.max(1, n);   // even slot per bar
+  const barW = Math.min(slotW * 0.68, MAX_BAR);
 
   const bar = (d: IChartDatum, i: number): React.ReactElement => {
-    const x = PAD_X + i * (BAR_W + GAP);
+    const cx = PAD_X + i * slotW + slotW / 2;         // slot centre
+    const x = cx - barW / 2;
     const h = Math.max(2, (d.value / max) * PLOT_H);
     const y = baseY - h;
     // Bar with rounded top corners, anchored to the baseline.
     const path = `M${x},${baseY} L${x},${y + R} Q${x},${y} ${x + R},${y} `
-      + `L${x + BAR_W - R},${y} Q${x + BAR_W},${y} ${x + BAR_W},${y + R} L${x + BAR_W},${baseY} Z`;
+      + `L${x + barW - R},${y} Q${x + barW},${y} ${x + barW},${y + R} L${x + barW},${baseY} Z`;
     return (
       <g key={i} className={styles.bar}>
         <title>{`${d.label}: ${d.value}`}</title>
         <path d={path} className={styles.fill} />
-        <text x={x + BAR_W / 2} y={y - 7} className={styles.val}>{d.value}</text>
-        <text x={x + BAR_W / 2} y={baseY + 18} className={styles.cat}>{trim(d.label)}</text>
+        <text x={cx} y={y - 7} className={styles.val}>{d.value}</text>
+        <text x={cx} y={baseY + 18} className={styles.cat}>{trim(d.label)}</text>
       </g>
     );
   };
@@ -72,13 +75,13 @@ const ChartFromList: React.FC<IChartFromListProps> = (props) => {
       {!loading && !error && n > 0 && (
         <div className={styles.plot}>
           <svg
-            viewBox={`0 0 ${width} ${height}`}
-            width="100%"
+            viewBox={`0 0 ${VBW} ${height}`}
+            style={{ width: '100%', height: `${height}px`, display: 'block' }}
             preserveAspectRatio="xMidYMax meet"
             role="img"
             aria-label={`${title || 'Chart'}: ${summary}`}
           >
-            <line x1={PAD_X} y1={baseY} x2={width - PAD_X} y2={baseY} className={styles.axis} />
+            <line x1={PAD_X} y1={baseY} x2={VBW - PAD_X} y2={baseY} className={styles.axis} />
             {items.map((d, i) => bar(d, i))}
           </svg>
         </div>
