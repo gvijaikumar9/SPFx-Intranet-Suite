@@ -161,6 +161,14 @@
           "manifest": "./src/webparts/weather/WeatherWebPart.manifest.json"
         }
       ]
+    },
+    "greeting-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/greeting/GreetingWebPart.js",
+          "manifest": "./src/webparts/greeting/GreetingWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -184,6 +192,7 @@
     "ChartFromListWebPartStrings": "lib/webparts/chartFromList/loc/{locale}.js",
     "CelebrationsWebPartStrings": "lib/webparts/celebrations/loc/{locale}.js",
     "TabsContainerWebPartStrings": "lib/webparts/tabsContainer/loc/{locale}.js",
-    "WeatherWebPartStrings": "lib/webparts/weather/loc/{locale}.js"
+    "WeatherWebPartStrings": "lib/webparts/weather/loc/{locale}.js",
+    "GreetingWebPartStrings": "lib/webparts/greeting/loc/{locale}.js"
   }
 }

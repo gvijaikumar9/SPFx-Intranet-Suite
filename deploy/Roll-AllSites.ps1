@@ -22,7 +22,8 @@ param(
   [Parameter(Mandatory = $true)][string]$ClientId,
   [string]$ImageFolder = "C:\Users\gvija\source\repos\spfx-intranet-webparts\images",
   [switch]$SkipTheme,
-  [switch]$SkipImages
+  [switch]$SkipImages,
+  [string]$Only   # optional: roll out just one site key (e.g. "spotlight")
 )
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
@@ -35,8 +36,9 @@ $sites = @(
   @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit' },
   @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad' },
   @{ Key = 'momentum';  Variant = 'card';    Accent = '#4f46e5'; Theme = 'IntranetMomentum' },
-  @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight' }
+  @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight'; Layout = 'spotlight' }
 )
+if ($Only) { $sites = $sites | Where-Object { $_.Key -eq $Only }; if (-not $sites) { throw "No site with key '$Only'." } }
 
 foreach ($s in $sites) {
   $url = "https://$Tenant.sharepoint.com/sites/intranet-$($s.Key)"
@@ -60,13 +62,17 @@ foreach ($s in $sites) {
   # 4. provision the lists (adds Celebrations etc.; idempotent)
   & (Join-Path $root "Provision-IntranetLists.ps1") -Url $url -ClientId $ClientId
 
-  # 5. build the home page with this template's base variant
-  & (Join-Path $root "Build-HomePages.ps1") -Url $url -ClientId $ClientId -Variant $s.Variant -Card -RealData
+  # 5. build the home page with this template's base variant + composition preset
+  $layout = if ($s.Layout) { $s.Layout } else { 'default' }
+  & (Join-Path $root "Build-HomePages.ps1") -Url $url -ClientId $ClientId -Variant $s.Variant -Card -RealData -Layout $layout
 
   # 6. set the news hero images
   if (-not $SkipImages -and (Test-Path $ImageFolder)) {
     & (Join-Path $root "Set-NewsImages.ps1") -Url $url -ClientId $ClientId -ImageFolder $ImageFolder
   }
+
+  # 7. set the top navigation to the prototype menu
+  & (Join-Path $root "Set-SiteNav.ps1") -Url $url -ClientId $ClientId
 }
 
 Write-Host "`nDone. All five template sites deployed, themed and built to match their prototypes." -ForegroundColor Cyan

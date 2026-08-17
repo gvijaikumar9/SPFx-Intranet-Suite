@@ -32,7 +32,8 @@ param(
   [Parameter(Mandatory = $true)][string]$ClientId,
   [ValidateSet('card', 'minimal', 'bold', 'compact')][string]$Variant = 'card',
   [switch]$RealData,
-  [switch]$Card   # prototype look: neutral section backgrounds + white bordered web-part cards
+  [switch]$Card,   # prototype look: neutral section backgrounds + white bordered web-part cards
+  [ValidateSet('default', 'spotlight')][string]$Layout = 'default'   # composition preset (which web parts go where)
 )
 $ErrorActionPreference = "Stop"
 
@@ -54,6 +55,18 @@ else { Write-Host ("  no known property parameter; placement only. Available par
 $sections = @(
   'OneColumn',       # 1  announcements ticker, full width
   'TwoColumnLeft'    # 2  main (col 1, 2/3) + sidebar (col 2, 1/3)
+)
+
+# Spotlight composition (matches prototype-polished.html): a personalised greeting
+# strip, a hero + latest-news row, an app-tile row, a what's-on + people-spotlight
+# row, a pulse-stats strip, then a full-width learning band. Only the ~8 web parts
+# the prototype actually shows, in the prototype's order.
+$spotlightSections = @(
+  'OneColumn',       # 1  greeting strip
+  'TwoColumnLeft',   # 2  news hero (2/3) + latest news list (1/3)
+  'OneColumn',       # 3  jump back in - app tiles
+  'TwoColumnLeft',   # 4  what's on (2/3) + people spotlight (1/3)
+  'OneColumn'        # 5  pulse stats
 )
 
 # --- web part placements. Multiple web parts in the same Section+Column stack by
@@ -88,6 +101,34 @@ $plan = @(
   @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 9;  LiveNoList = $true }
 )
 
+# Spotlight plan: the prototype-polished composition. Container overrides keep the
+# greeting band tinted (not a white card) and let the hero/learning bands sit flush.
+$spotlightPlan = @(
+  # 1  greeting strip - transparent so the web part's own tinted band shows through
+  @{ Title = 'Greeting';               Sec = 1; Col = 1; Order = 1; Variant = 'minimal'; Container = @{ showBorder = $false; backgroundMode = 'transparent' }; Extra = @{ chipsText = '3|Tasks due, 2|Approvals, |Next: Standup 10:30' } },
+
+  # 2  hero + latest news
+  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1; Variant = 'bold'; List = 'News'; Container = @{ showBorder = $false; backgroundMode = 'transparent' } },
+  @{ Title = 'Content Rollup';         Sec = 2; Col = 2; Order = 1; List = 'News' },
+
+  # 3  jump back in - app tiles
+  @{ Title = 'Quick Links';            Sec = 3; Col = 1; Order = 1; List = 'QuickLinks' },
+
+  # 4  what's on + people spotlight
+  @{ Title = 'Upcoming Events';        Sec = 4; Col = 1; Order = 1; List = 'Events' },
+  @{ Title = 'Employee of the Month';  Sec = 4; Col = 2; Order = 1; Variant = 'bold'; List = 'EmployeeOfMonth' },
+
+  # 5  pulse stats
+  @{ Title = 'KPI Tiles';              Sec = 5; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' }
+)
+
+# pick the composition preset
+if ($Layout -eq 'spotlight') {
+  $sections = $spotlightSections
+  $plan = $spotlightPlan
+  Write-Host "  composition preset: spotlight ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
+}
+
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.
 try {
   Remove-PnPPage -Identity "Home.aspx" -Force -ErrorAction Stop
@@ -114,6 +155,8 @@ foreach ($wp in $plan) {
   $wpVariant = if ($wp.Variant) { $wp.Variant } else { $Variant }
   $props = @{ layout = $wpVariant; showTitle = $true }
   if ($Card) { $props.showBorder = $true; $props.backgroundMode = 'white' }
+  # per-web-part container override wins over -Card (e.g. flush hero / tinted greeting band)
+  if ($wp.Container) { foreach ($c in $wp.Container.GetEnumerator()) { $props[$c.Key] = $c.Value } }
   if ($RealData) {
     if ($wp.List) { $props.useDemoData = $false; $props.listTitle = $wp.List }
     elseif ($wp.LiveNoList) { $props.useDemoData = $false }

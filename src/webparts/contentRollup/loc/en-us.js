@@ -6,8 +6,9 @@ define([], function() {
     "TitleFieldLabel": "Heading",
     "LayoutFieldLabel": "Layout style",
     "MaxItemsLabel": "Items to show",
+    "ListTitleLabel": "News list (recommended)",
     "QueryFieldLabel": "Search query",
     "UseDemoLabel": "Use sample data (no search)",
-    "FieldHint": "The default query finds news posts across sites you can see. You can replace it with any valid SharePoint search query (KQL)."
+    "FieldHint": "Point it at a list (e.g. News) for reliable, curated results. Leave the list blank to fall back to a tenant-wide search query (KQL); note search can be unavailable on some tenants."
   }
 });

@@ -5,6 +5,7 @@ declare interface IContentRollupWebPartStrings {
   TitleFieldLabel: string;
   LayoutFieldLabel: string;
   MaxItemsLabel: string;
+  ListTitleLabel: string;
   QueryFieldLabel: string;
   UseDemoLabel: string;
   FieldHint: string;

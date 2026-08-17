@@ -24,6 +24,7 @@ export interface IContentRollupWebPartProps extends IStandardWebPartProps {
   layout: string;
   maxItems: number;
   queryText: string;
+  listTitle: string;
   useDemoData: boolean;
 }
 
@@ -76,6 +77,15 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
       return;
     }
 
+    // A bound list is the reliable source (search/query returns HTTP 500 on tenants
+    // where the managed properties are not mapped). When listTitle is set we read the
+    // list directly; otherwise we fall back to a tenant search.
+    if (this.properties.listTitle) {
+      await this._loadFromList(top);
+      this._loading = false;
+      return;
+    }
+
     // No selectproperties or sortlist: an unmapped managed property (SiteTitle is not
     // mapped on every tenant) makes the search query return HTTP 500. The default
     // result set still includes Title, Path and Write, which is all we display.
@@ -115,6 +125,40 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
     this._loading = false;
   }
 
+  private async _loadFromList(top: number): Promise<void> {
+    const listTitle = this.properties.listTitle.replace(/'/g, "''");
+    // No $select: the bound list may not have Category/NewsLink columns, and $select on a
+    // missing field is a hard 400. Ordering by Created is valid on every list.
+    const url = `${this.context.pageContext.web.absoluteUrl}`
+      + `/_api/web/lists/getByTitle('${listTitle}')/items`
+      + `?$orderby=Created desc&$top=${top}`;
+    try {
+      const res: SPHttpClientResponse = await this.context.spHttpClient.get(url, SPHttpClient.configurations.v1);
+      if (!res.ok) {
+        this._error = res.status === 404
+          ? `List "${this.properties.listTitle}" was not found.`
+          : `Could not load news (HTTP ${res.status}).`;
+        this._items = [];
+        return;
+      }
+      const json = await res.json();
+      this._items = (json.value || []).map((row: Record<string, unknown>, i: number): IRollupItem => {
+        const link = row.NewsLink as { Url?: string } | undefined;
+        const rawPath = link && link.Url ? link.Url : '';
+        return {
+          id: Number(row.Id ?? i),
+          title: (row.Title ?? '').toString(),
+          site: row.Category ? row.Category.toString() : undefined,
+          date: row.Created ? row.Created.toString() : undefined,
+          path: /^(https?:|#|\/)/i.test(rawPath) ? rawPath : undefined // safe schemes only
+        };
+      }).filter((n: IRollupItem) => n.title.length > 0);
+    } catch {
+      this._error = 'Could not load news.';
+      this._items = [];
+    }
+  }
+
   private _safeRender(): void {
     if (this.domElement && this.properties) { this.render(); }
   }
@@ -123,7 +167,7 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
     if (path === 'backgroundMode') {
       this.context.propertyPane.refresh();
     }
-    const dataProps = ['queryText', 'maxItems', 'useDemoData'];
+    const dataProps = ['queryText', 'listTitle', 'maxItems', 'useDemoData'];
     if (dataProps.indexOf(path) >= 0) {
       if (path === 'useDemoData') {
         this.context.propertyPane.refresh();
@@ -155,6 +199,7 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
     this.properties.layout = 'card';
     this.properties.maxItems = 6;
     this.properties.queryText = 'PromotedState:2';
+    this.properties.listTitle = '';
     this.properties.showTitle = true;
     this.properties.showBorder = false;
     this.properties.backgroundMode = 'transparent';
@@ -193,7 +238,8 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
               groupName: strings.DataGroupName,
               groupFields: [
                 PropertyPaneToggle('useDemoData', { label: strings.UseDemoLabel, onText: 'On', offText: 'Off' }),
-                PropertyPaneTextField('queryText', { label: strings.QueryFieldLabel, disabled: demo }),
+                PropertyPaneTextField('listTitle', { label: strings.ListTitleLabel, disabled: demo }),
+                PropertyPaneTextField('queryText', { label: strings.QueryFieldLabel, disabled: demo || !!this.properties.listTitle }),
                 PropertyPaneLabel('fieldHint', { text: strings.FieldHint })
               ]
             },

@@ -1,0 +1,57 @@
+@import '../../shared/layoutVariants';
+
+.greeting {
+  --accent: #0f6cbd;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  border-radius: 12px;
+  // a light, accent-tinted band (matches the Spotlight greeting strip)
+  background: color-mix(in srgb, var(--accent) 7%, #f1f4f6);
+
+  .hi {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .name {
+    color: var(--accent);
+  }
+
+  .chips {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: #ffffff;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 12px;
+    padding: 9px 14px;
+    font-size: 13px;
+    box-shadow: 0 1.6px 3.6px rgba(0, 0, 0, 0.08);
+  }
+
+  .cnt {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-weight: 800;
+    border-radius: 8px;
+    padding: 1px 8px;
+    font-size: 12.5px;
+  }
+
+  .chipLbl {
+    font-weight: 700;
+  }
+}
