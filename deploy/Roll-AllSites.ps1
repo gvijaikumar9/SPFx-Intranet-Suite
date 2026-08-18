@@ -35,7 +35,7 @@ $sites = @(
   @{ Key = 'cascade';   Variant = 'card';    Accent = '#0f6cbd'; Theme = 'IntranetCascade' },
   @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit'; Layout = 'cockpit' },
   @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad' },
-  @{ Key = 'momentum';  Variant = 'card';    Accent = '#4f46e5'; Theme = 'IntranetMomentum' },
+  @{ Key = 'momentum';  Variant = 'bold';    Accent = '#4f46e5'; Theme = 'IntranetMomentum'; Layout = 'momentum' },
   @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight'; Layout = 'spotlight' }
 )
 if ($Only) { $sites = $sites | Where-Object { $_.Key -eq $Only }; if (-not $sites) { throw "No site with key '$Only'." } }

@@ -68,4 +68,9 @@
     font-weight: 600;
     color: var(--accent);
   }
+
+  // dark unit fills: text is switched to light inline; lift the label a touch
+  .onDark {
+    .lbl { opacity: 0.9; }
+  }
 }

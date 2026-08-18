@@ -5,7 +5,6 @@ import {
   type IPropertyPaneConfiguration,
   PropertyPaneTextField,
   PropertyPaneDropdown,
-  PropertyPaneDropdownOptionType,
   PropertyPaneSlider,
   PropertyPaneToggle,
   PropertyPaneLabel
@@ -19,6 +18,7 @@ import KpiTiles from './components/KpiTiles';
 import { IKpiTilesProps } from './components/IKpiTilesProps';
 import { IKpi, normalizeTrend } from './models/IKpi';
 import { IStandardWebPartProps, computeFrameStyle, shouldShowTitle, standardPaneFields } from '../shared/standardProps';
+import { resolveTileColors, collectCustomKeys, tileColorModeOptions, tileColorPickerOptions, MAX_TILE_COLORS } from '../shared/tileColors';
 
 export interface IKpiTilesWebPartProps extends IStandardWebPartProps {
   title: string;
@@ -36,30 +36,6 @@ export interface IKpiTilesWebPartProps extends IStandardWebPartProps {
   tileColor7: string;
   tileColor8: string;
 }
-
-// Tile fills, grouped by family. Soft/Fluorescent/Water are light (dark text stays
-// legible); Dark fills flip the tile text to light automatically (see the component).
-const MILD: { [key: string]: string } = {
-  // soft pastels
-  blue: '#eaf2fb', green: '#eaf6ee', amber: '#fdf3e3', rose: '#fbeef0',
-  purple: '#f2edfb', teal: '#e8f5f3', grey: '#f1f3f5',
-  // fluorescent (brighter, still dark-text readable)
-  lime: '#ddf99a', coral: '#ffcdbf', sky: '#cfe9ff', lemon: '#fff0a6',
-  lilac: '#e4d4ff', mint: '#bff4d6',
-  // water / aqua
-  aqua: '#d6f5f0', seafoam: '#dcf3e6', ocean: '#c2e6f0',
-  // dark / deep (light text)
-  slate: '#334155', indigo: '#3730a3', forest: '#14532d', maroon: '#7f1d1d',
-  plum: '#4c1d95', charcoal: '#1f2937'
-};
-// Auto palettes rotate one family across the tiles, so each tile is a unique colour.
-const PALETTES: { [mode: string]: string[] } = {
-  palette: ['blue', 'green', 'amber', 'rose', 'purple', 'teal', 'grey'],   // soft (legacy key)
-  fluro: ['lime', 'coral', 'sky', 'lemon', 'lilac', 'mint'],
-  water: ['aqua', 'seafoam', 'ocean'],
-  dark: ['slate', 'indigo', 'forest', 'maroon', 'plum', 'charcoal']
-};
-const MAX_TILE_COLORS = 8;
 
 const DEMO_ITEMS: IKpi[] = [
   { id: 1, label: 'Open IT tickets', value: '42', trend: 'down', delta: '12% vs last week' },
@@ -155,25 +131,15 @@ export default class KpiTilesWebPart extends BaseClientSideWebPart<IKpiTilesWebP
   }
 
   private _tileColors(): (string | undefined)[] {
-    const mode = this.properties.tileColorMode || 'none';
     const items = this._items || [];
-    const props = this.properties as unknown as { [k: string]: string };
-    const order = PALETTES[mode];
-    const out: (string | undefined)[] = [];
-    for (let i = 0; i < items.length; i++) {
-      if (order) {
-        out.push(MILD[order[i % order.length]]);
-      } else if (mode === 'trend') {
-        const t = items[i].trend;
-        out.push(t === 'up' ? MILD.green : (t === 'down' ? MILD.rose : MILD.grey));
-      } else if (mode === 'custom') {
-        const key = (props['tileColor' + (i + 1)] || '').toString();
-        out.push(key && MILD[key] ? MILD[key] : undefined);
-      } else {
-        out.push(undefined);
-      }
-    }
-    return out;
+    const trends: string[] = [];
+    for (let i = 0; i < items.length; i++) { trends.push(items[i].trend); }
+    return resolveTileColors(
+      this.properties.tileColorMode || 'none',
+      items.length,
+      collectCustomKeys(this.properties, items.length),
+      trends
+    );
   }
 
   private _safeRender(): void {
@@ -240,56 +206,14 @@ export default class KpiTilesWebPart extends BaseClientSideWebPart<IKpiTilesWebP
     const demo = this.properties.useDemoData;
 
     // Tile colours group: a mode dropdown, plus one picker per tile in Custom mode.
-    const H = PropertyPaneDropdownOptionType.Header;
-    const colorOptions = [
-      { key: '', text: 'Default (theme)' },
-      { key: 'h-soft', text: 'Soft', type: H },
-      { key: 'blue', text: 'Mild blue' },
-      { key: 'green', text: 'Mild green' },
-      { key: 'amber', text: 'Mild amber' },
-      { key: 'rose', text: 'Mild rose' },
-      { key: 'purple', text: 'Mild purple' },
-      { key: 'teal', text: 'Mild teal' },
-      { key: 'grey', text: 'Mild grey' },
-      { key: 'h-fluro', text: 'Fluorescent', type: H },
-      { key: 'lime', text: 'Lime' },
-      { key: 'coral', text: 'Coral' },
-      { key: 'sky', text: 'Sky' },
-      { key: 'lemon', text: 'Lemon' },
-      { key: 'lilac', text: 'Lilac' },
-      { key: 'mint', text: 'Mint' },
-      { key: 'h-water', text: 'Water', type: H },
-      { key: 'aqua', text: 'Aqua' },
-      { key: 'seafoam', text: 'Seafoam' },
-      { key: 'ocean', text: 'Ocean' },
-      { key: 'h-dark', text: 'Dark (light text)', type: H },
-      { key: 'slate', text: 'Slate' },
-      { key: 'indigo', text: 'Indigo' },
-      { key: 'forest', text: 'Forest' },
-      { key: 'maroon', text: 'Maroon' },
-      { key: 'plum', text: 'Plum' },
-      { key: 'charcoal', text: 'Charcoal' }
-    ];
     const tileColorFields = [
-      PropertyPaneDropdown('tileColorMode', {
-        label: 'Tile colours',
-        options: [
-          { key: 'none', text: 'None (default)' },
-          { key: 'h-auto', text: 'Auto palettes (unique per tile)', type: PropertyPaneDropdownOptionType.Header },
-          { key: 'palette', text: 'Soft palette' },
-          { key: 'fluro', text: 'Fluorescent palette' },
-          { key: 'water', text: 'Water palette' },
-          { key: 'dark', text: 'Dark palette (light text)' },
-          { key: 'h-other', text: 'Other', type: PropertyPaneDropdownOptionType.Header },
-          { key: 'trend', text: 'By trend (up green / down rose)' },
-          { key: 'custom', text: 'Custom (choose each tile)' }
-        ]
-      })
+      PropertyPaneDropdown('tileColorMode', { label: 'Tile colours', options: tileColorModeOptions(true) })
     ];
     if ((this.properties.tileColorMode || 'none') === 'custom') {
       const tileCount = Math.min(MAX_TILE_COLORS, Math.max((this._items && this._items.length) || 0, 4));
+      const pickerOptions = tileColorPickerOptions();
       for (let i = 1; i <= tileCount; i++) {
-        tileColorFields.push(PropertyPaneDropdown('tileColor' + i, { label: 'Tile ' + i, options: colorOptions }));
+        tileColorFields.push(PropertyPaneDropdown('tileColor' + i, { label: 'Tile ' + i, options: pickerOptions }));
       }
     }
 

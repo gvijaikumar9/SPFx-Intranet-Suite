@@ -27,7 +27,8 @@
       "backgroundMode": "transparent",
       "backgroundColor": "#eef3f8",
       "listTitle": "",
-      "useDemoData": true
+      "useDemoData": true,
+      "tileColorMode": "none"
     }
   }]
 }

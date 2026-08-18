@@ -16,6 +16,7 @@ import * as strings from 'PollSurveyWebPartStrings';
 import PollSurvey from './components/PollSurvey';
 import { IPollSurveyProps, IPollOption } from './components/IPollSurveyProps';
 import { IStandardWebPartProps, computeFrameStyle, shouldShowTitle, standardPaneFields } from '../shared/standardProps';
+import { resolveTileColors, collectCustomKeys, tileColorModeOptions, tileColorPickerOptions, MAX_TILE_COLORS } from '../shared/tileColors';
 
 export interface IPollSurveyWebPartProps extends IStandardWebPartProps {
   title: string;
@@ -24,6 +25,15 @@ export interface IPollSurveyWebPartProps extends IStandardWebPartProps {
   optionsText: string;
   listTitle: string;
   useDemoData: boolean;
+  tileColorMode: string;   // none (single accent) | palette | fluro | water | dark | custom
+  tileColor1: string;
+  tileColor2: string;
+  tileColor3: string;
+  tileColor4: string;
+  tileColor5: string;
+  tileColor6: string;
+  tileColor7: string;
+  tileColor8: string;
 }
 
 export default class PollSurveyWebPart extends BaseClientSideWebPart<IPollSurveyWebPartProps> {
@@ -58,6 +68,7 @@ export default class PollSurveyWebPart extends BaseClientSideWebPart<IPollSurvey
         accent: this._accent,
         submitting: this._submitting,
         submitError: this._submitError,
+        optionColors: resolveTileColors(this.properties.tileColorMode || 'none', options.length, collectCustomKeys(this.properties, options.length)),
         loading: this._loading,
         error: this._error,
         onVote: (option: string) => this._vote(option)
@@ -211,6 +222,12 @@ export default class PollSurveyWebPart extends BaseClientSideWebPart<IPollSurvey
       this._safeRender();
       this._loadResults().then(() => this._safeRender()).catch(() => this._safeRender());
     }
+    if (path === 'tileColorMode') {
+      this.context.propertyPane.refresh(); // show or hide the per-option pickers
+    }
+    if (path.indexOf('tileColor') === 0) {
+      this._safeRender();
+    }
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
@@ -240,6 +257,9 @@ export default class PollSurveyWebPart extends BaseClientSideWebPart<IPollSurvey
     this.properties.backgroundColor = '#eef3f8';
     this.properties.listTitle = '';
     this.properties.useDemoData = true;
+    this.properties.tileColorMode = 'none';
+    const p = this.properties as unknown as { [k: string]: string };
+    for (let i = 1; i <= MAX_TILE_COLORS; i++) { p['tileColor' + i] = ''; }
     this._voted = false;
     this._submitError = undefined;
     this.context.propertyPane.refresh();
@@ -250,6 +270,20 @@ export default class PollSurveyWebPart extends BaseClientSideWebPart<IPollSurvey
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     const demo = this.properties.useDemoData;
+
+    // Bar colours group: single accent by default; auto palette or Custom per option.
+    const pollOptions = this._parseOptions();
+    const barColorFields = [
+      PropertyPaneDropdown('tileColorMode', { label: 'Bar colours', options: tileColorModeOptions(false) })
+    ];
+    if ((this.properties.tileColorMode || 'none') === 'custom') {
+      const pickerOptions = tileColorPickerOptions();
+      const count = Math.min(MAX_TILE_COLORS, pollOptions.length);
+      for (let i = 1; i <= count; i++) {
+        barColorFields.push(PropertyPaneDropdown('tileColor' + i, { label: pollOptions[i - 1], options: pickerOptions }));
+      }
+    }
+
     return {
       pages: [
         {
@@ -288,6 +322,10 @@ export default class PollSurveyWebPart extends BaseClientSideWebPart<IPollSurvey
                 }),
                 PropertyPaneLabel('fieldHint', { text: strings.FieldHint })
               ]
+            },
+            {
+              groupName: 'Bar colours',
+              groupFields: barColorFields
             },
             {
               groupName: 'Container',

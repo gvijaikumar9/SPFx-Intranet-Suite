@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import styles from './KpiTiles.module.scss';
 import { IKpiTilesProps } from './IKpiTilesProps';
+import { readableTileText } from '../../shared/tileColors';
 
 const LAYOUT_CLASS: Record<string, string | undefined> = {
   card: styles.layoutCard,
@@ -9,18 +10,6 @@ const LAYOUT_CLASS: Record<string, string | undefined> = {
   bold: styles.layoutBold,
   compact: styles.layoutCompact
 };
-
-// Returns a light text colour for dark fills, or undefined to keep the theme's text.
-function readableText(bg: string | undefined): string | undefined {
-  if (!bg) { return undefined; }
-  const h = bg.replace('#', '');
-  if (h.length !== 6) { return undefined; }
-  const r = parseInt(h.substring(0, 2), 16);
-  const g = parseInt(h.substring(2, 4), 16);
-  const b = parseInt(h.substring(4, 6), 16);
-  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255; // perceived brightness
-  return lum < 0.55 ? '#ffffff' : undefined;
-}
 
 const TREND_ARROW: Record<string, string> = { up: '▲', down: '▼', flat: '–' };
 const TREND_CLASS: Record<string, string | undefined> = {
@@ -55,7 +44,7 @@ const KpiTiles: React.FC<IKpiTilesProps> = (props) => {
         <ul className={styles.grid}>
           {items.map((k, i) => {
             const bg = tileColors[i];
-            const fg = readableText(bg);
+            const fg = readableTileText(bg);
             return (
             <li
               key={k.id}

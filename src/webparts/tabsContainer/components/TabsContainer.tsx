@@ -3,6 +3,7 @@ import { useMemo, useState, useEffect } from 'react';
 import styles from './TabsContainer.module.scss';
 import { ITabsContainerProps } from './ITabsContainerProps';
 import { tabsOf } from '../models/ITabItem';
+import { readableTileText } from '../../shared/tileColors';
 
 const LAYOUT_CLASS: Record<string, string | undefined> = {
   card: styles.layoutCard,
@@ -14,7 +15,7 @@ const LAYOUT_CLASS: Record<string, string | undefined> = {
 let tabsUidCounter = 0;
 
 const TabsContainer: React.FC<ITabsContainerProps> = (props) => {
-  const { title, layout, showTitle, frameStyle, isDemo, accent, items, loading, error } = props;
+  const { title, layout, showTitle, frameStyle, isDemo, accent, items, tabColors, loading, error } = props;
   const style = useMemo(
     () => ({ ...frameStyle, ['--accent' as string]: accent } as React.CSSProperties),
     [accent, frameStyle]
@@ -59,7 +60,10 @@ const TabsContainer: React.FC<ITabsContainerProps> = (props) => {
       {!loading && !error && tabs.length > 0 && (
         <>
           <div className={styles.tabbar} role="tablist" aria-label={title || 'Tabs'} onKeyDown={onTabKey}>
-            {tabs.map((t, i) => (
+            {tabs.map((t, i) => {
+              const bg = tabColors[i];
+              const fg = readableTileText(bg);
+              return (
               <button
                 key={t}
                 id={`${uid}-tab-${i}`}
@@ -68,10 +72,12 @@ const TabsContainer: React.FC<ITabsContainerProps> = (props) => {
                 aria-selected={i === active}
                 aria-controls={`${uid}-panel`}
                 tabIndex={i === active ? 0 : -1}
-                className={`${styles.tab} ${i === active ? styles.tabOn : ''}`}
+                className={`${styles.tab} ${i === active ? styles.tabOn : ''} ${bg ? styles.tabTinted : ''} ${fg ? styles.onDark : ''}`}
+                style={bg ? { background: bg, color: fg } : undefined}
                 onClick={() => setActive(i)}
               >{t}</button>
-            ))}
+              );
+            })}
           </div>
           <ul className={styles.list} role="tabpanel" id={`${uid}-panel`} aria-labelledby={`${uid}-tab-${active}`}>
             {rows.map((it) => (

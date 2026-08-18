@@ -28,7 +28,8 @@
       "tabField": "Category",
       "subtitleField": "",
       "linkField": "",
-      "useDemoData": true
+      "useDemoData": true,
+      "tileColorMode": "none"
     }
   }]
 }

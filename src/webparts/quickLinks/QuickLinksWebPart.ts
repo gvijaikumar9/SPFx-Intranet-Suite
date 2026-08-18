@@ -19,6 +19,7 @@ import QuickLinks from './components/QuickLinks';
 import { IQuickLinksProps } from './components/IQuickLinksProps';
 import { ILink, parseUrlField } from './models/ILink';
 import { IStandardWebPartProps, computeFrameStyle, shouldShowTitle, standardPaneFields } from '../shared/standardProps';
+import { resolveTileColors, collectCustomKeys, tileColorModeOptions, tileColorPickerOptions, MAX_TILE_COLORS } from '../shared/tileColors';
 
 export interface IQuickLinksWebPartProps extends IStandardWebPartProps {
   title: string;
@@ -26,6 +27,15 @@ export interface IQuickLinksWebPartProps extends IStandardWebPartProps {
   columns: number;
   listTitle: string;
   useDemoData: boolean;
+  tileColorMode: string;   // none | palette | fluro | water | dark | custom
+  tileColor1: string;
+  tileColor2: string;
+  tileColor3: string;
+  tileColor4: string;
+  tileColor5: string;
+  tileColor6: string;
+  tileColor7: string;
+  tileColor8: string;
 }
 
 const DEMO_ITEMS: ILink[] = [
@@ -58,11 +68,21 @@ export default class QuickLinksWebPart extends BaseClientSideWebPart<IQuickLinks
         isDemo: isDemo,
         accent: this._accent,
         items: this._items,
+        tileColors: this._tileColors(),
         loading: this._loading,
         error: this._error
       }
     );
     ReactDom.render(element, this.domElement);
+  }
+
+  private _tileColors(): (string | undefined)[] {
+    const n = (this._items || []).length;
+    return resolveTileColors(
+      this.properties.tileColorMode || 'none',
+      n,
+      collectCustomKeys(this.properties, n)
+    );
   }
 
   protected onInit(): Promise<void> {
@@ -139,6 +159,12 @@ export default class QuickLinksWebPart extends BaseClientSideWebPart<IQuickLinks
       this._safeRender();
       this._loadItems().then(() => this._safeRender()).catch(() => this._safeRender());
     }
+    if (path === 'tileColorMode') {
+      this.context.propertyPane.refresh(); // show or hide the per-tile pickers
+    }
+    if (path.indexOf('tileColor') === 0) {
+      this._safeRender();
+    }
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
@@ -167,6 +193,9 @@ export default class QuickLinksWebPart extends BaseClientSideWebPart<IQuickLinks
     this.properties.backgroundColor = '#eef3f8';
     this.properties.listTitle = '';
     this.properties.useDemoData = true;
+    this.properties.tileColorMode = 'none';
+    const p = this.properties as unknown as { [k: string]: string };
+    for (let i = 1; i <= MAX_TILE_COLORS; i++) { p['tileColor' + i] = ''; }
     this.context.propertyPane.refresh();
     this._loading = true;
     this._safeRender();
@@ -175,6 +204,19 @@ export default class QuickLinksWebPart extends BaseClientSideWebPart<IQuickLinks
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     const demo = this.properties.useDemoData;
+
+    // Tile colours group: a mode dropdown, plus one picker per tile in Custom mode.
+    const tileColorFields = [
+      PropertyPaneDropdown('tileColorMode', { label: 'Tile colours', options: tileColorModeOptions(false) })
+    ];
+    if ((this.properties.tileColorMode || 'none') === 'custom') {
+      const tileCount = Math.min(MAX_TILE_COLORS, Math.max((this._items && this._items.length) || 0, 4));
+      const pickerOptions = tileColorPickerOptions();
+      for (let i = 1; i <= tileCount; i++) {
+        tileColorFields.push(PropertyPaneDropdown('tileColor' + i, { label: 'Tile ' + i, options: pickerOptions }));
+      }
+    }
+
     return {
       pages: [
         {
@@ -207,6 +249,10 @@ export default class QuickLinksWebPart extends BaseClientSideWebPart<IQuickLinks
                 }),
                 PropertyPaneLabel('fieldHint', { text: strings.FieldHint })
               ]
+            },
+            {
+              groupName: 'Tile colours',
+              groupFields: tileColorFields
             },
             {
               groupName: 'Container',

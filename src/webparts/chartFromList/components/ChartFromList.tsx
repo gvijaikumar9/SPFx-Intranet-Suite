@@ -26,7 +26,7 @@ function trim(label: string): string {
 }
 
 const ChartFromList: React.FC<IChartFromListProps> = (props) => {
-  const { title, layout, showTitle, frameStyle, isDemo, accent, items, loading, error } = props;
+  const { title, layout, showTitle, frameStyle, isDemo, accent, items, barColors, loading, error } = props;
   const style = useMemo(
     () => ({ ...frameStyle, ['--accent' as string]: accent } as React.CSSProperties),
     [accent, frameStyle]
@@ -53,7 +53,7 @@ const ChartFromList: React.FC<IChartFromListProps> = (props) => {
     return (
       <g key={i} className={styles.bar}>
         <title>{`${d.label}: ${d.value}`}</title>
-        <path d={path} className={styles.fill} />
+        <path d={path} className={styles.fill} fill={barColors[i]} />
         <text x={cx} y={y - 7} className={styles.val}>{d.value}</text>
         <text x={cx} y={baseY + 18} className={styles.cat}>{trim(d.label)}</text>
       </g>

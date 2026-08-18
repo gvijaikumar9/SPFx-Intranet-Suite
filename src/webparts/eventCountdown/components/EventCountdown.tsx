@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useMemo, useState, useEffect } from 'react';
 import styles from './EventCountdown.module.scss';
 import { IEventCountdownProps } from './IEventCountdownProps';
+import { readableTileText } from '../../shared/tileColors';
 
 const LAYOUT_CLASS: Record<string, string | undefined> = {
   card: styles.layoutCard,
@@ -23,7 +24,7 @@ function split(ms: number): IParts {
 }
 
 const EventCountdown: React.FC<IEventCountdownProps> = (props) => {
-  const { title, layout, showTitle, frameStyle, eventName, targetIso, isDemo, accent } = props;
+  const { title, layout, showTitle, frameStyle, eventName, targetIso, isDemo, accent, unitColors } = props;
   const [nowMs, setNowMs] = useState<number>(() => new Date().getTime());
 
   const style = useMemo(
@@ -46,12 +47,19 @@ const EventCountdown: React.FC<IEventCountdownProps> = (props) => {
   const parts = remaining !== undefined ? split(remaining) : undefined;
   const passed = remaining !== undefined && remaining <= 0;
 
-  const cell = (value: number, label: string): React.ReactElement => (
-    <div className={styles.cell}>
-      <span className={styles.num}>{value < 10 ? `0${value}` : value}</span>
-      <span className={styles.lbl}>{label}</span>
-    </div>
-  );
+  const cell = (value: number, label: string, idx: number): React.ReactElement => {
+    const bg = unitColors[idx];
+    const fg = readableTileText(bg);
+    return (
+      <div
+        className={`${styles.cell} ${fg ? styles.onDark : ''}`}
+        style={bg ? { background: bg, borderColor: 'transparent', color: fg } : undefined}
+      >
+        <span className={styles.num}>{value < 10 ? `0${value}` : value}</span>
+        <span className={styles.lbl}>{label}</span>
+      </div>
+    );
+  };
 
   return (
     <section className={`${styles.countdown} ${layoutClass}`} style={style}>
@@ -65,10 +73,10 @@ const EventCountdown: React.FC<IEventCountdownProps> = (props) => {
       )}
       {parts && !passed && (
         <div className={styles.grid}>
-          {cell(parts.d, parts.d === 1 ? 'day' : 'days')}
-          {cell(parts.h, 'hours')}
-          {cell(parts.m, 'mins')}
-          {cell(parts.s, 'secs')}
+          {cell(parts.d, parts.d === 1 ? 'day' : 'days', 0)}
+          {cell(parts.h, 'hours', 1)}
+          {cell(parts.m, 'mins', 2)}
+          {cell(parts.s, 'secs', 3)}
         </div>
       )}
       {passed && <p className={styles.passed}>This event is happening now.</p>}

@@ -9,6 +9,7 @@ export interface IChartFromListProps {
   isDemo: boolean;
   accent: string;
   items: IChartDatum[];
+  barColors: (string | undefined)[];   // resolved fill per bar; undefined = accent
   loading: boolean;
   error?: string;
 }

@@ -13,7 +13,7 @@ const LAYOUT_CLASS: Record<string, string | undefined> = {
 const PollSurvey: React.FC<IPollSurveyProps> = (props) => {
   const {
     title, layout, showTitle, frameStyle, question, options, results, total,
-    voted, configured, isDemo, accent, submitting, submitError, loading, error, onVote
+    voted, configured, isDemo, accent, submitting, submitError, optionColors, loading, error, onVote
   } = props;
 
   const style = useMemo(
@@ -57,9 +57,10 @@ const PollSurvey: React.FC<IPollSurveyProps> = (props) => {
 
       {!loading && !error && voted && (
         <div className={styles.results}>
-          {options.map((o) => {
+          {options.map((o, i) => {
             const c = countFor(o);
             const p = pct(c);
+            const bg = optionColors[i];
             return (
               <div key={o} className={styles.row}>
                 <div className={styles.rowHead}>
@@ -67,7 +68,7 @@ const PollSurvey: React.FC<IPollSurveyProps> = (props) => {
                   <span className={styles.optPct}>{p}%</span>
                 </div>
                 <div className={styles.bar}>
-                  <div className={styles.fill} style={{ width: `${p}%` }} />
+                  <div className={styles.fill} style={bg ? { width: `${p}%`, background: bg } : { width: `${p}%` }} />
                 </div>
               </div>
             );

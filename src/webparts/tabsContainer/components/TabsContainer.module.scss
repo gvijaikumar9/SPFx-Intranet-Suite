@@ -44,6 +44,22 @@
     opacity: 1;
   }
 
+  // tinted tabs become rounded chips; the active one gets an accent ring instead of the underline
+  .tabTinted {
+    border-radius: 8px 8px 0 0;
+    opacity: 1;
+    border-bottom-color: transparent;
+  }
+
+  .tabTinted.tabOn {
+    box-shadow: inset 0 -2px 0 0 var(--accent);
+    border-bottom-color: transparent;
+  }
+
+  .tabTinted.onDark {
+    color: #fff;
+  }
+
   .tab:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;

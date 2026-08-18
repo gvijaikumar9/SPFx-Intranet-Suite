@@ -33,7 +33,7 @@ param(
   [ValidateSet('card', 'minimal', 'bold', 'compact')][string]$Variant = 'card',
   [switch]$RealData,
   [switch]$Card,   # prototype look: neutral section backgrounds + white bordered web-part cards
-  [ValidateSet('default', 'spotlight', 'cockpit')][string]$Layout = 'default'   # composition preset (which web parts go where)
+  [ValidateSet('default', 'spotlight', 'cockpit', 'momentum')][string]$Layout = 'default'   # composition preset (which web parts go where)
 )
 $ErrorActionPreference = "Stop"
 
@@ -171,10 +171,13 @@ if ($Layout -eq 'spotlight') {
   $plan = $spotlightPlan
   Write-Host "  composition preset: spotlight ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
 }
-elseif ($Layout -eq 'cockpit') {
+elseif ($Layout -eq 'cockpit' -or $Layout -eq 'momentum') {
+  # Cockpit and Momentum share the same composition (full-width alerts/hero/KPI band +
+  # a card deck); they differ only by base variant + accent (compact/blue vs bold/indigo),
+  # which the caller passes via -Variant and the theme.
   $sections = $cockpitSections
   $plan = $cockpitPlan
-  Write-Host "  composition preset: cockpit ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
+  Write-Host "  composition preset: $Layout ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
 }
 
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.

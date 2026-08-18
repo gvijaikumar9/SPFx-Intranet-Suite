@@ -14,13 +14,21 @@ import * as strings from 'EventCountdownWebPartStrings';
 import EventCountdown from './components/EventCountdown';
 import { IEventCountdownProps } from './components/IEventCountdownProps';
 import { IStandardWebPartProps, computeFrameStyle, shouldShowTitle, standardPaneFields } from '../shared/standardProps';
+import { resolveTileColors, collectCustomKeys, tileColorModeOptions, tileColorPickerOptions } from '../shared/tileColors';
 
 export interface IEventCountdownWebPartProps extends IStandardWebPartProps {
   title: string;
   layout: string;
   eventName: string;
   targetDate: string;
+  tileColorMode: string;   // none | palette | fluro | water | dark | custom
+  tileColor1: string;
+  tileColor2: string;
+  tileColor3: string;
+  tileColor4: string;
 }
+
+const UNIT_LABELS = ['Days', 'Hours', 'Mins', 'Secs'];
 
 export default class EventCountdownWebPart extends BaseClientSideWebPart<IEventCountdownWebPartProps> {
 
@@ -43,7 +51,8 @@ export default class EventCountdownWebPart extends BaseClientSideWebPart<IEventC
         eventName: this.properties.eventName || 'Company kickoff',
         targetIso: targetIso,
         isDemo: !hasTarget,
-        accent: this._accent
+        accent: this._accent,
+        unitColors: resolveTileColors(this.properties.tileColorMode || 'none', 4, collectCustomKeys(this.properties, 4))
       }
     );
     ReactDom.render(element, this.domElement);
@@ -56,6 +65,12 @@ export default class EventCountdownWebPart extends BaseClientSideWebPart<IEventC
   protected onPropertyPaneFieldChanged(path: string): void {
     if (path === 'backgroundMode') {
       this.context.propertyPane.refresh();
+    }
+    if (path === 'tileColorMode') {
+      this.context.propertyPane.refresh(); // show or hide the per-unit pickers
+    }
+    if (path.indexOf('tileColor') === 0) {
+      this._safeRender();
     }
   }
 
@@ -84,11 +99,24 @@ export default class EventCountdownWebPart extends BaseClientSideWebPart<IEventC
     this.properties.showBorder = false;
     this.properties.backgroundMode = 'transparent';
     this.properties.backgroundColor = '#eef3f8';
+    this.properties.tileColorMode = 'none';
+    const p = this.properties as unknown as { [k: string]: string };
+    for (let i = 1; i <= 4; i++) { p['tileColor' + i] = ''; }
     this.context.propertyPane.refresh();
     this._safeRender();
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    // Unit colours group: a mode dropdown, plus a picker per unit box in Custom mode.
+    const unitColorFields = [
+      PropertyPaneDropdown('tileColorMode', { label: 'Unit colours', options: tileColorModeOptions(false) })
+    ];
+    if ((this.properties.tileColorMode || 'none') === 'custom') {
+      const pickerOptions = tileColorPickerOptions();
+      for (let i = 1; i <= 4; i++) {
+        unitColorFields.push(PropertyPaneDropdown('tileColor' + i, { label: UNIT_LABELS[i - 1], options: pickerOptions }));
+      }
+    }
     return {
       pages: [
         {
@@ -116,6 +144,10 @@ export default class EventCountdownWebPart extends BaseClientSideWebPart<IEventC
                 PropertyPaneTextField('targetDate', { label: strings.TargetDateFieldLabel }),
                 PropertyPaneLabel('fieldHint', { text: strings.FieldHint })
               ]
+            },
+            {
+              groupName: 'Unit colours',
+              groupFields: unitColorFields
             },
             {
               groupName: 'Container',

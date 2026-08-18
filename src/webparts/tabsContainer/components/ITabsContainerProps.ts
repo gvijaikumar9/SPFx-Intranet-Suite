@@ -9,6 +9,7 @@ export interface ITabsContainerProps {
   isDemo: boolean;
   accent: string;
   items: ITabItem[];
+  tabColors: (string | undefined)[];   // resolved background per tab header; undefined = default
   loading: boolean;
   error?: string;
 }

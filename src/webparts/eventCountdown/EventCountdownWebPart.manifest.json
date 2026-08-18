@@ -25,7 +25,8 @@
       "showTitle": true,
       "showBorder": false,
       "backgroundMode": "transparent",
-      "backgroundColor": "#eef3f8"
+      "backgroundColor": "#eef3f8",
+      "tileColorMode": "none"
     }
   }]
 }

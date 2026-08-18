@@ -28,7 +28,8 @@
       "listTitle": "",
       "categoryField": "Category",
       "valueField": "",
-      "useDemoData": true
+      "useDemoData": true,
+      "tileColorMode": "none"
     }
   }]
 }

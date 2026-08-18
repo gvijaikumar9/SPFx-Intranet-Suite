@@ -20,6 +20,7 @@ export interface IPollSurveyProps {
   accent: string;
   submitting: boolean;
   submitError?: string;
+  optionColors: (string | undefined)[];   // resolved bar fill per option; undefined = accent
   loading: boolean;
   error?: string;
   onVote: (option: string) => void;

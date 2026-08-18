@@ -93,4 +93,12 @@
     font-weight: 600;
     line-height: 1.25;
   }
+
+  // dark tile fills: text is switched to light inline; frost the icon circle so it stays visible
+  .onDark {
+    .iconWrap {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+  }
 }

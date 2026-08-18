@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Icon } from '@fluentui/react';
 import styles from './QuickLinks.module.scss';
 import { IQuickLinksProps } from './IQuickLinksProps';
+import { readableTileText } from '../../shared/tileColors';
 
 const LAYOUT_CLASS: Record<string, string | undefined> = {
   card: styles.layoutCard,
@@ -12,7 +13,7 @@ const LAYOUT_CLASS: Record<string, string | undefined> = {
 };
 
 const QuickLinks: React.FC<IQuickLinksProps> = (props) => {
-  const { title, layout, showTitle, frameStyle, columns, isDemo, accent, items, loading, error } = props;
+  const { title, layout, showTitle, frameStyle, columns, isDemo, accent, items, tileColors, loading, error } = props;
   const style = useMemo(
     () => ({
       ...frameStyle,
@@ -35,10 +36,14 @@ const QuickLinks: React.FC<IQuickLinksProps> = (props) => {
       )}
       {!loading && !error && items.length > 0 && (
         <ul className={styles.grid}>
-          {items.map((l) => (
+          {items.map((l, i) => {
+            const bg = tileColors[i];
+            const fg = readableTileText(bg);
+            return (
             <li key={l.id} className={styles.cell}>
               <a
-                className={styles.tile}
+                className={`${styles.tile} ${fg ? styles.onDark : ''}`}
+                style={bg ? { background: bg, borderColor: 'transparent', color: fg } : undefined}
                 href={l.url || '#'}
                 target="_blank"
                 rel="noreferrer"
@@ -50,7 +55,8 @@ const QuickLinks: React.FC<IQuickLinksProps> = (props) => {
                 <span className={styles.label}>{l.label}</span>
               </a>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </section>

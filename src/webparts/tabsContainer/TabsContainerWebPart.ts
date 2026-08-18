@@ -15,8 +15,9 @@ import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 import * as strings from 'TabsContainerWebPartStrings';
 import TabsContainer from './components/TabsContainer';
 import { ITabsContainerProps } from './components/ITabsContainerProps';
-import { ITabItem } from './models/ITabItem';
+import { ITabItem, tabsOf } from './models/ITabItem';
 import { IStandardWebPartProps, computeFrameStyle, shouldShowTitle, standardPaneFields } from '../shared/standardProps';
+import { resolveTileColors, collectCustomKeys, tileColorModeOptions, tileColorPickerOptions, MAX_TILE_COLORS } from '../shared/tileColors';
 
 export interface ITabsContainerWebPartProps extends IStandardWebPartProps {
   title: string;
@@ -26,6 +27,15 @@ export interface ITabsContainerWebPartProps extends IStandardWebPartProps {
   subtitleField: string;
   linkField: string;
   useDemoData: boolean;
+  tileColorMode: string;   // none | palette | fluro | water | dark | custom
+  tileColor1: string;
+  tileColor2: string;
+  tileColor3: string;
+  tileColor4: string;
+  tileColor5: string;
+  tileColor6: string;
+  tileColor7: string;
+  tileColor8: string;
 }
 
 const DEMO_ITEMS: ITabItem[] = [
@@ -72,11 +82,21 @@ export default class TabsContainerWebPart extends BaseClientSideWebPart<ITabsCon
         isDemo: isDemo,
         accent: this._accent,
         items: this._items,
+        tabColors: this._tabColors(),
         loading: this._loading,
         error: this._error
       }
     );
     ReactDom.render(element, this.domElement);
+  }
+
+  private _tabColors(): (string | undefined)[] {
+    const n = tabsOf(this._items || []).length;
+    return resolveTileColors(
+      this.properties.tileColorMode || 'none',
+      n,
+      collectCustomKeys(this.properties, n)
+    );
   }
 
   protected onInit(): Promise<void> {
@@ -160,6 +180,12 @@ export default class TabsContainerWebPart extends BaseClientSideWebPart<ITabsCon
       this._safeRender();
       this._loadItems().then(() => this._safeRender()).catch(() => this._safeRender());
     }
+    if (path === 'tileColorMode') {
+      this.context.propertyPane.refresh(); // show or hide the per-tab pickers
+    }
+    if (path.indexOf('tileColor') === 0) {
+      this._safeRender();
+    }
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
@@ -190,6 +216,9 @@ export default class TabsContainerWebPart extends BaseClientSideWebPart<ITabsCon
     this.properties.subtitleField = '';
     this.properties.linkField = '';
     this.properties.useDemoData = true;
+    this.properties.tileColorMode = 'none';
+    const p = this.properties as unknown as { [k: string]: string };
+    for (let i = 1; i <= MAX_TILE_COLORS; i++) { p['tileColor' + i] = ''; }
     this.context.propertyPane.refresh();
     this._loading = true;
     this._safeRender();
@@ -198,6 +227,20 @@ export default class TabsContainerWebPart extends BaseClientSideWebPart<ITabsCon
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     const demo = this.properties.useDemoData;
+
+    // Tab colours group: a mode dropdown, plus a picker per tab (named) in Custom mode.
+    const tabNames = tabsOf(this._items || []);
+    const tabColorFields = [
+      PropertyPaneDropdown('tileColorMode', { label: 'Tab colours', options: tileColorModeOptions(false) })
+    ];
+    if ((this.properties.tileColorMode || 'none') === 'custom') {
+      const pickerOptions = tileColorPickerOptions();
+      const count = Math.min(MAX_TILE_COLORS, tabNames.length);
+      for (let i = 1; i <= count; i++) {
+        tabColorFields.push(PropertyPaneDropdown('tileColor' + i, { label: tabNames[i - 1], options: pickerOptions }));
+      }
+    }
+
     return {
       pages: [
         {
@@ -232,6 +275,10 @@ export default class TabsContainerWebPart extends BaseClientSideWebPart<ITabsCon
                 PropertyPaneTextField('linkField', { label: strings.LinkFieldLabel, disabled: demo }),
                 PropertyPaneLabel('fieldHint', { text: strings.FieldHint })
               ]
+            },
+            {
+              groupName: 'Tab colours',
+              groupFields: tabColorFields
             },
             {
               groupName: 'Container',
