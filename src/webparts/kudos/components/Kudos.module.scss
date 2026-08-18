@@ -3,6 +3,7 @@
 .kudos {
   --accent: #0f6cbd;
   --wp-soft-error: #a8636a; // muted rose for errors, never harsh red (suite rule)
+  container-type: inline-size; // respond to the web part's own width, not the viewport
 
   .heading {
     margin: 0 0 4px 0;
@@ -28,7 +29,7 @@
     gap: 16px;
   }
 
-  @media (min-width: 720px) {
+  @container (min-width: 560px) {
     .grid {
       grid-template-columns: 1fr 1.1fr;
     }

@@ -33,7 +33,7 @@ param(
   [ValidateSet('card', 'minimal', 'bold', 'compact')][string]$Variant = 'card',
   [switch]$RealData,
   [switch]$Card,   # prototype look: neutral section backgrounds + white bordered web-part cards
-  [ValidateSet('default', 'spotlight')][string]$Layout = 'default'   # composition preset (which web parts go where)
+  [ValidateSet('default', 'spotlight', 'cockpit')][string]$Layout = 'default'   # composition preset (which web parts go where)
 )
 $ErrorActionPreference = "Stop"
 
@@ -67,6 +67,16 @@ $spotlightSections = @(
   'OneColumn',       # 3  jump back in - app tiles
   'TwoColumnLeft',   # 4  what's on (2/3) + people spotlight (1/3)
   'OneColumn'        # 5  pulse stats
+)
+
+# Cockpit composition (matches prototype-compact.html): a dense operational dashboard.
+# Full-width alerts, hero and KPI row across the top, then a packed three-column deck
+# of small cards. The compact base variant tightens every card.
+$cockpitSections = @(
+  'OneColumn',       # 1  alerts ticker
+  'OneColumn',       # 2  news hero
+  'OneColumn',       # 3  KPI stat tiles
+  'ThreeColumn'      # 4  the dense card deck
 )
 
 # --- web part placements. Multiple web parts in the same Section+Column stack by
@@ -122,11 +132,49 @@ $spotlightPlan = @(
   @{ Title = 'KPI Tiles';              Sec = 5; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' }
 )
 
+# Cockpit plan: full-width alerts + hero + KPI, then a balanced three-column deck.
+# Base variant is compact (dense); Ticker/News=bold, KPI=minimal, Employee=bold are
+# the universal per-web-part overrides. Content Rollup reads the News list.
+$cockpitPlan = @(
+  # full-width top band
+  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; Variant = 'bold';    List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
+  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1; Variant = 'bold';    List = 'News' },
+  @{ Title = 'KPI Tiles';              Sec = 3; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' },
+
+  # deck column 1
+  @{ Title = 'Tabs';                   Sec = 4; Col = 1; Order = 1 },
+  @{ Title = 'Content Rollup';         Sec = 4; Col = 1; Order = 2; List = 'News' },
+  @{ Title = 'Kudos';                  Sec = 4; Col = 1; Order = 3; List = 'Kudos' },
+  @{ Title = 'Celebrations';           Sec = 4; Col = 1; Order = 4; List = 'Celebrations' },
+  @{ Title = 'Raise a Ticket';         Sec = 4; Col = 1; Order = 5; List = 'Tickets' },
+  @{ Title = 'Upcoming Holidays';      Sec = 4; Col = 1; Order = 6; List = 'Holidays' },
+
+  # deck column 2
+  @{ Title = 'Weather';                Sec = 4; Col = 2; Order = 1; Extra = @{ location = 'Houston' } },
+  @{ Title = 'Event Countdown';        Sec = 4; Col = 2; Order = 2 },
+  @{ Title = 'Upcoming Events';        Sec = 4; Col = 2; Order = 3; List = 'Events' },
+  @{ Title = 'Quick Links';            Sec = 4; Col = 2; Order = 4; List = 'QuickLinks' },
+  @{ Title = 'Image Gallery';          Sec = 4; Col = 2; Order = 5; List = 'IntranetGallery' },
+  @{ Title = 'FAQ Accordion';          Sec = 4; Col = 2; Order = 6; List = 'FAQ' },
+
+  # deck column 3
+  @{ Title = 'Chart from a List';      Sec = 4; Col = 3; Order = 1; List = 'Tickets'; Extra = @{ categoryField = 'TicketStatus' } },
+  @{ Title = 'Employee of the Month';  Sec = 4; Col = 3; Order = 2; Variant = 'bold'; List = 'EmployeeOfMonth' },
+  @{ Title = 'Poll';                   Sec = 4; Col = 3; Order = 3; List = 'PollVotes' },
+  @{ Title = 'Org Chart';              Sec = 4; Col = 3; Order = 4; LiveNoList = $true },
+  @{ Title = 'People Directory';       Sec = 4; Col = 3; Order = 5; LiveNoList = $true }
+)
+
 # pick the composition preset
 if ($Layout -eq 'spotlight') {
   $sections = $spotlightSections
   $plan = $spotlightPlan
   Write-Host "  composition preset: spotlight ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
+}
+elseif ($Layout -eq 'cockpit') {
+  $sections = $cockpitSections
+  $plan = $cockpitPlan
+  Write-Host "  composition preset: cockpit ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
 }
 
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.

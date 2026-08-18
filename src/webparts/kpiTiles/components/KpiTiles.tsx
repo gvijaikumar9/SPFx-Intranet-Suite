@@ -10,6 +10,18 @@ const LAYOUT_CLASS: Record<string, string | undefined> = {
   compact: styles.layoutCompact
 };
 
+// Returns a light text colour for dark fills, or undefined to keep the theme's text.
+function readableText(bg: string | undefined): string | undefined {
+  if (!bg) { return undefined; }
+  const h = bg.replace('#', '');
+  if (h.length !== 6) { return undefined; }
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255; // perceived brightness
+  return lum < 0.55 ? '#ffffff' : undefined;
+}
+
 const TREND_ARROW: Record<string, string> = { up: '▲', down: '▼', flat: '–' };
 const TREND_CLASS: Record<string, string | undefined> = {
   up: styles.up,
@@ -18,7 +30,7 @@ const TREND_CLASS: Record<string, string | undefined> = {
 };
 
 const KpiTiles: React.FC<IKpiTilesProps> = (props) => {
-  const { title, layout, showTitle, frameStyle, columns, isDemo, accent, items, loading, error } = props;
+  const { title, layout, showTitle, frameStyle, columns, isDemo, accent, items, tileColors, loading, error } = props;
   const style = useMemo(
     () => ({
       ...frameStyle,
@@ -41,8 +53,15 @@ const KpiTiles: React.FC<IKpiTilesProps> = (props) => {
       )}
       {!loading && !error && items.length > 0 && (
         <ul className={styles.grid}>
-          {items.map((k) => (
-            <li key={k.id} className={styles.tile}>
+          {items.map((k, i) => {
+            const bg = tileColors[i];
+            const fg = readableText(bg);
+            return (
+            <li
+              key={k.id}
+              className={`${styles.tile} ${fg ? styles.onDark : ''}`}
+              style={bg ? { background: bg, borderColor: 'transparent', color: fg } : undefined}
+            >
               <span className={styles.value}>{k.value}</span>
               <span className={styles.label}>{k.label}</span>
               {(k.delta || k.trend !== 'flat') && (
@@ -52,7 +71,8 @@ const KpiTiles: React.FC<IKpiTilesProps> = (props) => {
                 </span>
               )}
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </section>

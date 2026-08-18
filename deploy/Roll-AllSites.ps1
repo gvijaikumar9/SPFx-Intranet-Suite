@@ -33,7 +33,7 @@ $tunerId = "a2c4e6f8-1b3d-4f5a-9c7e-2d4f6a8b0c11"
 # base variant + accent per template (from the prototype reconciliation)
 $sites = @(
   @{ Key = 'cascade';   Variant = 'card';    Accent = '#0f6cbd'; Theme = 'IntranetCascade' },
-  @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit' },
+  @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit'; Layout = 'cockpit' },
   @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad' },
   @{ Key = 'momentum';  Variant = 'card';    Accent = '#4f46e5'; Theme = 'IntranetMomentum' },
   @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight'; Layout = 'spotlight' }

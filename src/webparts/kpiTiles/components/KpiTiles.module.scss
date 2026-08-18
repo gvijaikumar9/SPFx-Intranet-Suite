@@ -84,4 +84,12 @@
   .flat {
     opacity: 0.7;
   }
+
+  // dark fills: text is switched to light inline; lift the trend colours to match
+  .onDark {
+    .label { opacity: 0.92; }
+    .up { color: #6ee7a8; }
+    .down { color: #fcb4b4; }
+    .flat { opacity: 0.85; }
+  }
 }
