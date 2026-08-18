@@ -25,17 +25,18 @@ SPFx lazy-loads each web part's bundle, so an unused web part costs a page nothi
 | **Upcoming Holidays** | Date-badged upcoming public holidays. | Holidays list |
 | **Poll** | A one-question poll with live result bars. | PollVotes list |
 | **People Directory** | Search your organisation for a colleague. | People search |
-| **Content Rollup** | Recent news rolled up from across your sites. | Search |
+| **Content Rollup** | Recent news, read from a list you choose or rolled up from search. | News list or search |
 | **Org Chart** | Your manager, you, and your direct reports. | User profiles |
 | **Chart from a List** | A bar chart built from a list, grouped by a column. | Any list |
 | **Celebrations** | Upcoming birthdays and work anniversaries. | Celebrations list |
 | **Tabs** | A tabbed container grouping a list's items into tabs. | Any list |
 | **Weather** | Current weather and a 3-day forecast for a location. | open-meteo API |
+| **Greeting** | A time-based greeting for the signed-in user, with quick-stat chips. | Signed-in user |
 
 Every web part ships with sample data on by default, so it renders the moment you
 drop it on a page. Point it at a list, or turn on live data, when you are ready.
-People Directory, Content Rollup, and Org Chart use the site's own search and user
-profile services, so they need no extra admin consent.
+People Directory and Org Chart use the site's own search and user profile services,
+so they need no extra admin consent.
 
 ## Shared options on every web part
 
@@ -82,6 +83,24 @@ idempotent, so existing lists and fields are left alone.
 # schema only, no sample rows:
 .\deploy\Provision-IntranetLists.ps1 -Url "https://contoso.sharepoint.com/sites/intranet" -NoSampleData
 ```
+
+## Optional: build a demo home page
+
+`deploy/Build-HomePages.ps1` rebuilds a site's home page and drops the web parts
+into a ready-made layout, so you can see the whole suite at once. `Set-SiteNav.ps1`
+sets the top navigation to a sample menu.
+
+```powershell
+# default layout (all web parts, one column + sidebar):
+.\deploy\Build-HomePages.ps1 -Url "https://contoso.sharepoint.com/sites/intranet" -ClientId "<app-id>" -Variant card -RealData
+# a curated, magazine-style front page:
+.\deploy\Build-HomePages.ps1 -Url "https://contoso.sharepoint.com/sites/intranet" -ClientId "<app-id>" -Variant card -Card -RealData -Layout spotlight
+# sample top navigation:
+.\deploy\Set-SiteNav.ps1 -Url "https://contoso.sharepoint.com/sites/intranet" -ClientId "<app-id>"
+```
+
+Rebuilding the home page replaces its contents, so run it on a demo site, not a
+page you have hand-edited.
 
 ## Wire a web part to real data
 
