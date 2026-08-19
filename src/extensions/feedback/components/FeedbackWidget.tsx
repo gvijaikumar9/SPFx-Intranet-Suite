@@ -11,6 +11,8 @@ export interface IFeedbackWidgetProps {
 
 type SendState = 'idle' | 'sending' | 'done' | 'error';
 
+const MAX_COMMENT = 1000; // generous cap; the Comment list column (Note) holds far more
+
 const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
   const { accent, userName, userContact, onSubmit } = props;
   const [open, setOpen] = useState<boolean>(false);
@@ -75,9 +77,13 @@ const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
                 className={styles.comment}
                 placeholder="What's working well, and what could be better?"
                 value={comment}
-                onChange={(e) => setComment(e.target.value)}
+                maxLength={MAX_COMMENT}
+                onChange={(e) => setComment(e.target.value.substring(0, MAX_COMMENT))}
                 rows={3}
               />
+              <div className={`${styles.counter} ${comment.length >= MAX_COMMENT ? styles.counterMax : ''}`}>
+                {comment.length} / {MAX_COMMENT}
+              </div>
 
               {userName && (
                 <label className={styles.contact}>
