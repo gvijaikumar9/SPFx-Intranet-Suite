@@ -80,6 +80,9 @@ foreach ($s in $sites) {
 
   # 8. enable the site-wide footer with this template's accent
   & (Join-Path $root "Enable-Footer.ps1") -Url $url -ClientId $ClientId -Accent $s.Accent
+
+  # 9. enable the site-wide feedback bubble with this template's accent
+  & (Join-Path $root "Enable-Feedback.ps1") -Url $url -ClientId $ClientId -Accent $s.Accent
 }
 
 Write-Host "`nDone. All five template sites deployed, themed and built to match their prototypes." -ForegroundColor Cyan

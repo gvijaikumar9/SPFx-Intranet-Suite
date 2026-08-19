@@ -177,6 +177,14 @@
           "manifest": "./src/extensions/intranetFooter/IntranetFooterApplicationCustomizer.manifest.json"
         }
       ]
+    },
+    "feedback-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/feedback/FeedbackApplicationCustomizer.js",
+          "manifest": "./src/extensions/feedback/FeedbackApplicationCustomizer.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},

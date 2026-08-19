@@ -216,6 +216,15 @@ Add-Sample -List 'FooterLinks' -Rows @(
     @{ Title = 'Terms of use';   FooterUrl = 'https://contoso.sharepoint.com/sites/terms, Terms';       FooterGroup = 'Legal';     FooterOrder = 2 }
 )
 
+# ============================ FEEDBACK (site-wide feedback widget) ============================
+# Filled by the feedback bubble. Members submit; the site owner reviews the items here.
+New-IntranetList -Title 'Feedback' -Fields @(
+    @{ Display = 'Rating';  Internal = 'Rating';  Type = 'Number' },
+    @{ Display = 'Comment'; Internal = 'Comment'; Type = 'Note' },
+    @{ Display = 'Page';    Internal = 'PageUrl'; Type = 'Note' },
+    @{ Display = 'Contact'; Internal = 'Contact'; Type = 'Text' }
+)
+
 Write-Host "`nDone. Lists provisioned on $Url" -ForegroundColor Cyan
-Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations','FooterLinks' } |
+Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations','FooterLinks','Feedback' } |
     Select-Object Title, ItemCount | Format-Table -AutoSize

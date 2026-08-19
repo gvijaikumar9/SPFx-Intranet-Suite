@@ -1,0 +1,153 @@
+// A fixed, always-visible feedback bubble in the bottom-right corner, plus its panel.
+.root {
+  --accent: #0f6cbd;
+  --wp-soft-error: #a8636a;
+  position: fixed;
+  right: 24px;
+  bottom: 60px; // clear the slim footer bar
+  z-index: 40;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  * { box-sizing: border-box; }
+
+  .fab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .fab:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28); }
+  .fab:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+  .fabText { line-height: 1; }
+
+  .panel {
+    width: 320px;
+    max-width: calc(100vw - 40px);
+    background: #ffffff;
+    color: #242424;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .title { font-size: 14px; font-weight: 700; }
+
+  .close {
+    border: 0;
+    background: transparent;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .close:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .stars { display: flex; gap: 4px; }
+
+  .star {
+    border: 0;
+    background: transparent;
+    color: rgba(128, 128, 128, 0.4);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.1s ease;
+  }
+  .star.on { color: #f5b301; }
+  .star:hover { color: #f5b301; }
+  .star:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+  .comment {
+    width: 100%;
+    resize: vertical;
+    min-height: 68px;
+    padding: 9px 11px;
+    font: inherit;
+    font-size: 13.5px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 8px;
+  }
+  .comment:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .contact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #444444;
+  }
+
+  .error {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--wp-soft-error);
+  }
+
+  .send {
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .send:disabled { opacity: 0.5; cursor: default; }
+  .send:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .done {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 26px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #107c41;
+  }
+  .tick {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(16, 124, 65, 0.12);
+    font-size: 15px;
+  }
+
+  @media (max-width: 600px) {
+    right: 14px;
+    bottom: 66px;
+  }
+}
