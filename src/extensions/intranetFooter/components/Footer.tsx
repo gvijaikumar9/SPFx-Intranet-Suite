@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styles from './Footer.module.scss';
-import { IFooterGroup, ISocialLink } from '../models/IFooter';
+import { IFooterLink, IFooterGroup, ISocialLink } from '../models/IFooter';
 
 export interface IFooterProps {
   brandText: string;
-  blurb: string;
+  blurb: string;      // unused in the slim bar; kept for a stable prop shape
   copyright: string;
   groups: IFooterGroup[];
   social: ISocialLink[];
@@ -28,45 +28,42 @@ function icon(network: string): React.ReactElement {
   return ICONS[network] || ICONS.web;
 }
 
+// A slim, full-width footer bar: brand, an inline row of links, social icons, and a
+// copyright line, on one line (wraps on narrow screens).
 const Footer: React.FC<IFooterProps> = (props) => {
-  const { brandText, blurb, copyright, groups, social, accent } = props;
+  const { brandText, copyright, groups, social, accent } = props;
   const rootStyle = { ['--accent' as string]: accent } as React.CSSProperties;
+
+  const links: IFooterLink[] = [];
+  for (let g = 0; g < groups.length; g++) {
+    for (let l = 0; l < groups[g].links.length; l++) { links.push(groups[g].links[l]); }
+  }
 
   return (
     <footer className={styles.footer} style={rootStyle} role="contentinfo">
       <div className={styles.inner}>
-        <div className={styles.brandCol}>
-          <div className={styles.brand}>{brandText || 'Contoso'}</div>
-          {blurb && <p className={styles.blurb}>{blurb}</p>}
+        <span className={styles.brand}>{brandText || 'Contoso'}</span>
+
+        {links.length > 0 && (
+          <nav className={styles.links} aria-label="Footer links">
+            {links.map((l, i) => (
+              <a key={i} className={styles.link} href={l.url} target="_blank" rel="noreferrer">{l.title}</a>
+            ))}
+          </nav>
+        )}
+
+        <div className={styles.right}>
           {social.length > 0 && (
             <div className={styles.social}>
               {social.map((s, i) => (
                 <a key={i} className={styles.socialLink} href={s.url} target="_blank" rel="noreferrer" aria-label={s.network}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{icon(s.network)}</svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{icon(s.network)}</svg>
                 </a>
               ))}
             </div>
           )}
+          <span className={styles.copy}>{copyright || `© ${brandText || 'Contoso'}`}</span>
         </div>
-
-        <div className={styles.cols}>
-          {groups.map((g, gi) => (
-            <div key={gi} className={styles.col}>
-              <div className={styles.colHead}>{g.name}</div>
-              <ul className={styles.colList}>
-                {g.links.map((l, li) => (
-                  <li key={li}>
-                    <a className={styles.link} href={l.url} target="_blank" rel="noreferrer">{l.title}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.bar}>
-        <span>{copyright || `© ${brandText || 'Contoso'}`}</span>
       </div>
     </footer>
   );
