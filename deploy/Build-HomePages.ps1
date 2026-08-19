@@ -54,19 +54,8 @@ else { Write-Host ("  no known property parameter; placement only. Available par
 # If the widths come out reversed on your tenant, swap to 'TwoColumnRight'.
 $sections = @(
   'OneColumn',       # 1  announcements ticker, full width
-  'TwoColumnLeft',   # 2  main (col 1, 2/3) + sidebar (col 2, 1/3)
-  'OneColumn'        # 3  footer, full width
+  'TwoColumnLeft'    # 2  main (col 1, 2/3) + sidebar (col 2, 1/3)
 )
-
-# Footer content, shared by every preset. (Add-PnPPageWebPart's PropertiesJson replaces
-# the whole prop bag, so the manifest defaults are not kept - set them here.) The accent
-# follows each site's theme automatically.
-$footerExtra = @{
-  brandText = 'Contoso'
-  blurb     = 'One place for the news, tools and people that keep us moving.'
-  copyright = '(c) 2026 Contoso. For internal use.'
-  social    = 'linkedin|https://www.linkedin.com/company/microsoft, email|mailto:help@contoso.com, web|https://contoso.sharepoint.com'
-}
 
 # Spotlight composition (matches prototype-polished.html): a personalised greeting
 # strip, a hero + latest-news row, an app-tile row, a what's-on + people-spotlight
@@ -77,8 +66,7 @@ $spotlightSections = @(
   'TwoColumnLeft',   # 2  news hero (2/3) + latest news list (1/3)
   'OneColumn',       # 3  jump back in - app tiles
   'TwoColumnLeft',   # 4  what's on (2/3) + people spotlight (1/3)
-  'OneColumn',       # 5  pulse stats
-  'OneColumn'        # 6  footer
+  'OneColumn'        # 5  pulse stats
 )
 
 # Cockpit composition (matches prototype-compact.html): a dense operational dashboard.
@@ -88,8 +76,7 @@ $cockpitSections = @(
   'OneColumn',       # 1  alerts ticker
   'OneColumn',       # 2  news hero
   'OneColumn',       # 3  KPI stat tiles
-  'ThreeColumn',     # 4  the dense card deck
-  'OneColumn'        # 5  footer
+  'ThreeColumn'      # 4  the dense card deck
 )
 
 # Squad composition (matches prototype-department.html): a focused team-landing subset.
@@ -98,8 +85,7 @@ $cockpitSections = @(
 $squadSections = @(
   'OneColumn',       # 1  alerts ticker
   'OneColumn',       # 2  KPI stat tiles
-  'TwoColumnLeft',   # 3  main (2/3) + side (1/3)
-  'OneColumn'        # 4  footer
+  'TwoColumnLeft'    # 3  main (2/3) + side (1/3)
 )
 
 # Cascade composition (matches prototype.html): the classic comms-site flow. Full-width
@@ -109,8 +95,7 @@ $cascadeSections = @(
   'OneColumn',       # 1  alerts ticker
   'OneColumn',       # 2  news hero
   'OneColumn',       # 3  KPI stat tiles
-  'TwoColumnLeft',   # 4  main (2/3) + sidebar (1/3)
-  'OneColumn'        # 5  footer
+  'TwoColumnLeft'    # 4  main (2/3) + sidebar (1/3)
 )
 
 # --- web part placements. Multiple web parts in the same Section+Column stack by
@@ -142,10 +127,7 @@ $plan = @(
   @{ Title = 'Event Countdown';        Sec = 2; Col = 2; Order = 6 },
   @{ Title = 'Upcoming Holidays';      Sec = 2; Col = 2; Order = 7;  List = 'Holidays' },
   @{ Title = 'Org Chart';              Sec = 2; Col = 2; Order = 8;  LiveNoList = $true },
-  @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 9;  LiveNoList = $true },
-
-  # footer, full width
-  @{ Title = 'Footer';                 Sec = 3; Col = 1; Order = 1;  List = 'FooterLinks'; Extra = $footerExtra }
+  @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 9;  LiveNoList = $true }
 )
 
 # Spotlight plan: the prototype-polished composition. Container overrides keep the
@@ -166,10 +148,7 @@ $spotlightPlan = @(
   @{ Title = 'Employee of the Month';  Sec = 4; Col = 2; Order = 1; Variant = 'bold'; List = 'EmployeeOfMonth' },
 
   # 5  pulse stats
-  @{ Title = 'KPI Tiles';              Sec = 5; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' },
-
-  # 6  footer
-  @{ Title = 'Footer';                 Sec = 6; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
+  @{ Title = 'KPI Tiles';              Sec = 5; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' }
 )
 
 # Cockpit plan: full-width alerts + hero + KPI, then a balanced three-column deck.
@@ -202,10 +181,7 @@ $cockpitPlan = @(
   @{ Title = 'Employee of the Month';  Sec = 4; Col = 3; Order = 2; Variant = 'bold'; List = 'EmployeeOfMonth' },
   @{ Title = 'Poll';                   Sec = 4; Col = 3; Order = 3; List = 'PollVotes' },
   @{ Title = 'Org Chart';              Sec = 4; Col = 3; Order = 4; LiveNoList = $true },
-  @{ Title = 'People Directory';       Sec = 4; Col = 3; Order = 5; LiveNoList = $true },
-
-  # 5  footer
-  @{ Title = 'Footer';                 Sec = 5; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
+  @{ Title = 'People Directory';       Sec = 4; Col = 3; Order = 5; LiveNoList = $true }
 )
 
 # Squad plan: alerts + KPI band, then a team board (main) + roster/links (side).
@@ -225,10 +201,7 @@ $squadPlan = @(
   @{ Title = 'Event Countdown';        Sec = 3; Col = 2; Order = 2 },
   @{ Title = 'Quick Links';            Sec = 3; Col = 2; Order = 3; List = 'QuickLinks' },
   @{ Title = 'Kudos';                  Sec = 3; Col = 2; Order = 4; List = 'Kudos' },
-  @{ Title = 'Raise a Ticket';         Sec = 3; Col = 2; Order = 5; List = 'Tickets' },
-
-  # 4  footer
-  @{ Title = 'Footer';                 Sec = 4; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
+  @{ Title = 'Raise a Ticket';         Sec = 3; Col = 2; Order = 5; List = 'Tickets' }
 )
 
 # Cascade plan: full-width alerts + news hero + KPI, then a 2/3 main + 1/3 sidebar.
@@ -256,10 +229,7 @@ $cascadePlan = @(
   @{ Title = 'Quick Links';            Sec = 4; Col = 2; Order = 7; List = 'QuickLinks' },
   @{ Title = 'Upcoming Holidays';      Sec = 4; Col = 2; Order = 8; List = 'Holidays' },
   @{ Title = 'Raise a Ticket';         Sec = 4; Col = 2; Order = 9; List = 'Tickets' },
-  @{ Title = 'People Directory';       Sec = 4; Col = 2; Order = 10; LiveNoList = $true },
-
-  # 5  footer
-  @{ Title = 'Footer';                 Sec = 5; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
+  @{ Title = 'People Directory';       Sec = 4; Col = 2; Order = 10; LiveNoList = $true }
 )
 
 # pick the composition preset

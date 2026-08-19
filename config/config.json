@@ -170,11 +170,11 @@
         }
       ]
     },
-    "footer-web-part": {
+    "intranet-footer-application-customizer": {
       "components": [
         {
-          "entrypoint": "./lib/webparts/footer/FooterWebPart.js",
-          "manifest": "./src/webparts/footer/FooterWebPart.manifest.json"
+          "entrypoint": "./lib/extensions/intranetFooter/IntranetFooterApplicationCustomizer.js",
+          "manifest": "./src/extensions/intranetFooter/IntranetFooterApplicationCustomizer.manifest.json"
         }
       ]
     }
@@ -201,7 +201,6 @@
     "CelebrationsWebPartStrings": "lib/webparts/celebrations/loc/{locale}.js",
     "TabsContainerWebPartStrings": "lib/webparts/tabsContainer/loc/{locale}.js",
     "WeatherWebPartStrings": "lib/webparts/weather/loc/{locale}.js",
-    "GreetingWebPartStrings": "lib/webparts/greeting/loc/{locale}.js",
-    "FooterWebPartStrings": "lib/webparts/footer/loc/{locale}.js"
+    "GreetingWebPartStrings": "lib/webparts/greeting/loc/{locale}.js"
   }
 }
