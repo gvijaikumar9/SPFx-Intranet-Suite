@@ -31,11 +31,16 @@ export default class FeedbackApplicationCustomizer extends BaseApplicationCustom
 
     const list = this.properties.listTitle || 'Feedback';
     const webUrl = this.context.pageContext.web.absoluteUrl;
-    const userName = this.context.pageContext.user ? this.context.pageContext.user.displayName : '';
+    const user = this.context.pageContext.user;
+    const userName = user ? (user.displayName || '') : '';
+    const email = user ? (user.email || user.loginName || '') : '';
+    // actionable contact stored on opt-in: "Name <email>" (or whichever is available)
+    const userContact = email ? (userName ? `${userName} <${email}>` : email) : userName;
 
     const element: React.ReactElement<IFeedbackWidgetProps> = React.createElement(FeedbackWidget, {
       accent: this.properties.accent || '#0f6cbd',
-      userName: userName || '',
+      userName: userName,
+      userContact: userContact,
       onSubmit: (rating: number, comment: string, contact: string): Promise<boolean> =>
         submitFeedback(this.context.spHttpClient, webUrl, list, {
           rating: rating,

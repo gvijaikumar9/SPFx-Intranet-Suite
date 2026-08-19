@@ -28,6 +28,8 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
   private _links: IFooterLink[] = [];
   private _pending: number | undefined = undefined;
   private _placed: boolean = false;
+  private _pinned: boolean = true;    // assume pinned (works when placeholder is fixed); refined by _detect
+  private _detected: boolean = false;
 
   public onInit(): Promise<void> {
     this.context.placeholderProvider.changedEvent.add(this, this._render);
@@ -65,19 +67,26 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
     }
   };
 
-  // Only scroll-reveal when the footer is actually pinned (a fixed/sticky context). If it
-  // renders in-flow, keep it always rendered - an in-flow footer already shows only at the
-  // end of the page, and never hiding it means no reflow and no flicker.
-  private _isPinned(): boolean {
-    let el: HTMLElement | null = this._bottom ? this._bottom.domElement : null;
-    let depth = 0;
-    while (el && depth < 6) {
-      const pos = window.getComputedStyle(el).position;
-      if (pos === 'fixed' || pos === 'sticky') { return true; }
-      el = el.parentElement;
-      depth++;
-    }
-    return false;
+  // Detect ONCE whether the footer is pinned by measuring whether toggling it actually
+  // changes the page height. If hiding/showing it does not change any scroll height, it is
+  // fixed (safe to scroll-reveal, no reflow, no flicker). If it does, it is in-flow, so we
+  // keep it always rendered (never toggle -> no flicker). This is a real reflow test, not a
+  // guess from computed CSS (which was unreliable across SharePoint's layout).
+  private _detect(): void {
+    if (this._detected || !this._bottom || !this._bottom.domElement) { return; }
+    const el = this._bottom.domElement;
+    const region = document.querySelector('[data-automation-id="contentScrollRegion"]') as HTMLElement | null;
+    const doc = document.documentElement;
+    const prev = el.style.display;
+    el.style.display = '';
+    const docShown = doc.scrollHeight;
+    const regShown = region ? region.scrollHeight : 0;
+    el.style.display = 'none';
+    const docHidden = doc.scrollHeight;
+    const regHidden = region ? region.scrollHeight : 0;
+    el.style.display = prev;
+    this._pinned = (docShown === docHidden) && (regShown === regHidden);
+    this._detected = true;
   }
 
   private _scroller(): HTMLElement | undefined {
@@ -105,7 +114,8 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
 
   private _apply(): void {
     if (!this._bottom || !this._bottom.domElement) { return; }
-    if (!this._isPinned()) {
+    this._detect();
+    if (!this._pinned) {
       this._bottom.domElement.style.display = ''; // in-flow: always render, never toggle
       return;
     }

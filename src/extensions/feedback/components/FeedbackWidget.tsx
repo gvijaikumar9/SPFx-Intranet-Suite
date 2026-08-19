@@ -4,14 +4,15 @@ import styles from './FeedbackWidget.module.scss';
 
 export interface IFeedbackWidgetProps {
   accent: string;
-  userName: string;   // current user's display name, for the opt-in follow-up line
+  userName: string;      // display name, shown on the opt-in line
+  userContact: string;   // actionable contact stored when opted in (e.g. "Name <email>")
   onSubmit: (rating: number, comment: string, contact: string) => Promise<boolean>;
 }
 
 type SendState = 'idle' | 'sending' | 'done' | 'error';
 
 const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
-  const { accent, userName, onSubmit } = props;
+  const { accent, userName, userContact, onSubmit } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
@@ -27,7 +28,7 @@ const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
   const send = (): void => {
     if (state === 'sending') { return; }
     setState('sending');
-    onSubmit(rating, comment, contactOk ? userName : '')
+    onSubmit(rating, comment, contactOk ? userContact : '')
       .then((ok) => {
         setState(ok ? 'done' : 'error');
         if (ok) { window.setTimeout(() => { setOpen(false); reset(); }, 1800); }
