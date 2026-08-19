@@ -15,14 +15,19 @@ export interface IIntranetFooterProperties {
   accent?: string;      // hex; matches the site theme accent
 }
 
-// Site-wide intranet footer. Renders the slim footer bar in the Bottom placeholder, which
-// SharePoint places full-width at the bottom of every page (the standard, reliable footer
-// mechanism - full width, every page, no flicker). Link columns come from a SharePoint
-// list; brand/copyright/social/accent are extension properties. Never breaks the page.
+const REGION_SELECTORS = ['[data-automation-id="contentScrollRegion"]', '#spPageCanvasContent'];
+const REVEAL = 44; // px from the bottom at which the slim bar appears
+
+// Site-wide intranet footer: a slim full-width bar in the Bottom placeholder, shown on
+// every page. With the built-in site footer disabled (Enable-Footer does this), the
+// placeholder is position:fixed, so it occupies no layout space - which lets us hide it
+// until the page is scrolled to the bottom with NO flicker (toggling a fixed element can
+// never reflow the page).
 export default class IntranetFooterApplicationCustomizer extends BaseApplicationCustomizer<IIntranetFooterProperties> {
 
   private _bottom: PlaceholderContent | undefined = undefined;
   private _links: IFooterLink[] = [];
+  private _pending: number | undefined = undefined;
 
   public onInit(): Promise<void> {
     this.context.placeholderProvider.changedEvent.add(this, this._render);
@@ -31,6 +36,8 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
     return getFooterLinks(this.context.spHttpClient, webUrl, list).then((links) => {
       this._links = links;
       this._render();
+      document.addEventListener('scroll', this._schedule, true); // capture inner-region scroll
+      window.addEventListener('resize', this._schedule);
     });
   }
 
@@ -52,7 +59,38 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
       accent: this.properties.accent || '#0f6cbd'
     });
     ReactDom.render(element, this._bottom.domElement);
+    this._bottom.domElement.style.display = 'none'; // hidden until scrolled to the bottom
+    window.setTimeout(() => this._apply(), 400);
   };
+
+  private _scroller(): HTMLElement | undefined {
+    for (let i = 0; i < REGION_SELECTORS.length; i++) {
+      const el = document.querySelector(REGION_SELECTORS[i]) as HTMLElement | null;
+      if (el && el.scrollHeight > el.clientHeight + 2) { return el; }
+    }
+    return undefined;
+  }
+
+  private _atBottom(): boolean {
+    const region = this._scroller();
+    if (region) {
+      return region.scrollHeight - region.scrollTop - region.clientHeight <= REVEAL;
+    }
+    const doc = document.documentElement;
+    // no inner scroll region (short page): treat as "at bottom" so it shows
+    return doc.scrollHeight - (window.innerHeight + (window.pageYOffset || doc.scrollTop)) <= REVEAL;
+  }
+
+  private _schedule = (): void => {
+    if (this._pending !== undefined) { return; }
+    this._pending = window.setTimeout(() => { this._pending = undefined; this._apply(); }, 80);
+  };
+
+  private _apply(): void {
+    if (!this._bottom || !this._bottom.domElement) { return; }
+    // the placeholder is fixed (built-in footer disabled), so toggling never reflows -> no flicker
+    this._bottom.domElement.style.display = this._atBottom() ? '' : 'none';
+  }
 
   private _onDispose = (): void => {
     if (this._bottom && this._bottom.domElement) {
@@ -61,6 +99,9 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
   };
 
   protected onDispose(): void {
+    document.removeEventListener('scroll', this._schedule, true);
+    window.removeEventListener('resize', this._schedule);
+    if (this._pending !== undefined) { window.clearTimeout(this._pending); }
     this._onDispose();
   }
 }
