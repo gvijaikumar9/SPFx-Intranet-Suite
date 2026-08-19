@@ -148,7 +148,7 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
         return {
           id: Number(row.Id ?? i),
           title: (row.Title ?? '').toString(),
-          site: row.Category ? row.Category.toString() : undefined,
+          site: this._catLabel(row.Category),
           date: row.Created ? row.Created.toString() : undefined,
           path: /^(https?:|#|\/)/i.test(rawPath) ? rawPath : undefined // safe schemes only
         };
@@ -157,6 +157,18 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
       this._error = 'Could not load news.';
       this._items = [];
     }
+  }
+
+  // Category can be plain text, a managed-metadata term ({ Label }) or a lookup ({ Title }).
+  // Coerce to a readable string; never emit "[object Object]".
+  private _catLabel(raw: unknown): string | undefined {
+    if (!raw) { return undefined; }
+    if (typeof raw === 'string') { return raw || undefined; }
+    if (typeof raw === 'object') {
+      const o = raw as { Label?: string; Title?: string; Value?: string };
+      return o.Label || o.Title || o.Value || undefined;
+    }
+    return raw.toString();
   }
 
   private _safeRender(): void {
@@ -169,7 +181,8 @@ export default class ContentRollupWebPart extends BaseClientSideWebPart<IContent
     }
     const dataProps = ['queryText', 'listTitle', 'maxItems', 'useDemoData'];
     if (dataProps.indexOf(path) >= 0) {
-      if (path === 'useDemoData') {
+      // both toggle the disabled state of the query box, so rebuild the pane
+      if (path === 'useDemoData' || path === 'listTitle') {
         this.context.propertyPane.refresh();
       }
       this._loading = true;
