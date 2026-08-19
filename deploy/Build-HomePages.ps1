@@ -33,7 +33,7 @@ param(
   [ValidateSet('card', 'minimal', 'bold', 'compact')][string]$Variant = 'card',
   [switch]$RealData,
   [switch]$Card,   # prototype look: neutral section backgrounds + white bordered web-part cards
-  [ValidateSet('default', 'spotlight', 'cockpit', 'momentum', 'squad')][string]$Layout = 'default'   # composition preset (which web parts go where)
+  [ValidateSet('default', 'spotlight', 'cockpit', 'momentum', 'squad', 'cascade')][string]$Layout = 'default'   # composition preset (which web parts go where)
 )
 $ErrorActionPreference = "Stop"
 
@@ -86,6 +86,16 @@ $squadSections = @(
   'OneColumn',       # 1  alerts ticker
   'OneColumn',       # 2  KPI stat tiles
   'TwoColumnLeft'    # 3  main (2/3) + side (1/3)
+)
+
+# Cascade composition (matches prototype.html): the classic comms-site flow. Full-width
+# alerts, then a news hero and KPI band across the top, then a 2/3 main + 1/3 sidebar
+# with the full web-part set.
+$cascadeSections = @(
+  'OneColumn',       # 1  alerts ticker
+  'OneColumn',       # 2  news hero
+  'OneColumn',       # 3  KPI stat tiles
+  'TwoColumnLeft'    # 4  main (2/3) + sidebar (1/3)
 )
 
 # --- web part placements. Multiple web parts in the same Section+Column stack by
@@ -194,6 +204,34 @@ $squadPlan = @(
   @{ Title = 'Raise a Ticket';         Sec = 3; Col = 2; Order = 5; List = 'Tickets' }
 )
 
+# Cascade plan: full-width alerts + news hero + KPI, then a 2/3 main + 1/3 sidebar.
+$cascadePlan = @(
+  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; Variant = 'bold';    List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
+  @{ Title = 'News Carousel';          Sec = 2; Col = 1; Order = 1; Variant = 'bold';    List = 'News' },
+  @{ Title = 'KPI Tiles';              Sec = 3; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' },
+
+  # main column (2/3)
+  @{ Title = 'Tabs';                   Sec = 4; Col = 1; Order = 1 },
+  @{ Title = 'Chart from a List';      Sec = 4; Col = 1; Order = 2; List = 'Tickets'; Extra = @{ categoryField = 'TicketStatus' } },
+  @{ Title = 'Content Rollup';         Sec = 4; Col = 1; Order = 3; List = 'News' },
+  @{ Title = 'Upcoming Events';        Sec = 4; Col = 1; Order = 4; List = 'Events' },
+  @{ Title = 'Org Chart';              Sec = 4; Col = 1; Order = 5; LiveNoList = $true },
+  @{ Title = 'Image Gallery';          Sec = 4; Col = 1; Order = 6; List = 'IntranetGallery' },
+  @{ Title = 'FAQ Accordion';          Sec = 4; Col = 1; Order = 7; List = 'FAQ' },
+
+  # sidebar (1/3)
+  @{ Title = 'Weather';                Sec = 4; Col = 2; Order = 1; Extra = @{ location = 'London' } },
+  @{ Title = 'Event Countdown';        Sec = 4; Col = 2; Order = 2 },
+  @{ Title = 'Employee of the Month';  Sec = 4; Col = 2; Order = 3; Variant = 'bold'; List = 'EmployeeOfMonth' },
+  @{ Title = 'Kudos';                  Sec = 4; Col = 2; Order = 4; List = 'Kudos' },
+  @{ Title = 'Celebrations';           Sec = 4; Col = 2; Order = 5; List = 'Celebrations' },
+  @{ Title = 'Poll';                   Sec = 4; Col = 2; Order = 6; List = 'PollVotes' },
+  @{ Title = 'Quick Links';            Sec = 4; Col = 2; Order = 7; List = 'QuickLinks' },
+  @{ Title = 'Upcoming Holidays';      Sec = 4; Col = 2; Order = 8; List = 'Holidays' },
+  @{ Title = 'Raise a Ticket';         Sec = 4; Col = 2; Order = 9; List = 'Tickets' },
+  @{ Title = 'People Directory';       Sec = 4; Col = 2; Order = 10; LiveNoList = $true }
+)
+
 # pick the composition preset
 if ($Layout -eq 'spotlight') {
   $sections = $spotlightSections
@@ -212,6 +250,11 @@ elseif ($Layout -eq 'squad') {
   $sections = $squadSections
   $plan = $squadPlan
   Write-Host "  composition preset: squad ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
+}
+elseif ($Layout -eq 'cascade') {
+  $sections = $cascadeSections
+  $plan = $cascadePlan
+  Write-Host "  composition preset: cascade ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
 }
 
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.
