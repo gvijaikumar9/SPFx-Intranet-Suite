@@ -14,6 +14,8 @@
 param(
   [Parameter(Mandatory = $true)][string]$Url,
   [Parameter(Mandatory = $true)][string]$ClientId,
+  # menu labels, in order. Defaults to the standard template menu.
+  [string[]]$Menu = @('Home', 'News', 'Departments', 'People', 'Tools', 'Support'),
   # label -> relative/absolute URL. Defaults below point placeholders at the home page.
   [hashtable]$Targets
 )
@@ -23,15 +25,9 @@ Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId
 $web = Get-PnPWeb
 $homeUrl = ($web.ServerRelativeUrl.TrimEnd('/')) + "/SitePages/Home.aspx"
 
-# prototype menu, in order
-$nav = @(
-  @{ Label = 'Home';        Url = $homeUrl },
-  @{ Label = 'News';        Url = $homeUrl },
-  @{ Label = 'Departments'; Url = $homeUrl },
-  @{ Label = 'People';      Url = $homeUrl },
-  @{ Label = 'Tools';       Url = $homeUrl },
-  @{ Label = 'Support';     Url = $homeUrl }
-)
+# build the menu, in order (placeholders point at the home page)
+$nav = @()
+foreach ($label in $Menu) { $nav += @{ Label = $label; Url = $homeUrl } }
 if ($Targets) {
   foreach ($n in $nav) { if ($Targets.ContainsKey($n.Label)) { $n.Url = $Targets[$n.Label] } }
 }

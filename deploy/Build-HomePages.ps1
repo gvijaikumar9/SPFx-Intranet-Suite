@@ -33,7 +33,7 @@ param(
   [ValidateSet('card', 'minimal', 'bold', 'compact')][string]$Variant = 'card',
   [switch]$RealData,
   [switch]$Card,   # prototype look: neutral section backgrounds + white bordered web-part cards
-  [ValidateSet('default', 'spotlight', 'cockpit', 'momentum')][string]$Layout = 'default'   # composition preset (which web parts go where)
+  [ValidateSet('default', 'spotlight', 'cockpit', 'momentum', 'squad')][string]$Layout = 'default'   # composition preset (which web parts go where)
 )
 $ErrorActionPreference = "Stop"
 
@@ -77,6 +77,15 @@ $cockpitSections = @(
   'OneColumn',       # 2  news hero
   'OneColumn',       # 3  KPI stat tiles
   'ThreeColumn'      # 4  the dense card deck
+)
+
+# Squad composition (matches prototype-department.html): a focused team-landing subset.
+# Full-width alerts + KPI band, then a main (2/3) + side (1/3) two-column. No news hero,
+# no employee/celebrations/gallery/poll - a team works from its board, roster and links.
+$squadSections = @(
+  'OneColumn',       # 1  alerts ticker
+  'OneColumn',       # 2  KPI stat tiles
+  'TwoColumnLeft'    # 3  main (2/3) + side (1/3)
 )
 
 # --- web part placements. Multiple web parts in the same Section+Column stack by
@@ -165,6 +174,26 @@ $cockpitPlan = @(
   @{ Title = 'People Directory';       Sec = 4; Col = 3; Order = 5; LiveNoList = $true }
 )
 
+# Squad plan: alerts + KPI band, then a team board (main) + roster/links (side).
+$squadPlan = @(
+  @{ Title = 'Announcements Ticker';   Sec = 1; Col = 1; Order = 1; Variant = 'bold';    List = 'Announcements'; Extra = @{ severityField = 'Severity'; linkField = 'Link'; messageField = 'Title' } },
+  @{ Title = 'KPI Tiles';              Sec = 2; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' },
+
+  # main column (2/3) - the team board
+  @{ Title = 'Content Rollup';         Sec = 3; Col = 1; Order = 1; List = 'News' },
+  @{ Title = 'Chart from a List';      Sec = 3; Col = 1; Order = 2; List = 'Tickets'; Extra = @{ categoryField = 'TicketStatus' } },
+  @{ Title = 'Upcoming Events';        Sec = 3; Col = 1; Order = 3; List = 'Events' },
+  @{ Title = 'Org Chart';              Sec = 3; Col = 1; Order = 4; LiveNoList = $true },
+  @{ Title = 'FAQ Accordion';          Sec = 3; Col = 1; Order = 5; List = 'FAQ' },
+
+  # side column (1/3) - roster, links, requests
+  @{ Title = 'People Directory';       Sec = 3; Col = 2; Order = 1; LiveNoList = $true },
+  @{ Title = 'Event Countdown';        Sec = 3; Col = 2; Order = 2 },
+  @{ Title = 'Quick Links';            Sec = 3; Col = 2; Order = 3; List = 'QuickLinks' },
+  @{ Title = 'Kudos';                  Sec = 3; Col = 2; Order = 4; List = 'Kudos' },
+  @{ Title = 'Raise a Ticket';         Sec = 3; Col = 2; Order = 5; List = 'Tickets' }
+)
+
 # pick the composition preset
 if ($Layout -eq 'spotlight') {
   $sections = $spotlightSections
@@ -178,6 +207,11 @@ elseif ($Layout -eq 'cockpit' -or $Layout -eq 'momentum') {
   $sections = $cockpitSections
   $plan = $cockpitPlan
   Write-Host "  composition preset: $Layout ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
+}
+elseif ($Layout -eq 'squad') {
+  $sections = $squadSections
+  $plan = $squadPlan
+  Write-Host "  composition preset: squad ($($sections.Count) sections, $($plan.Count) web parts)" -ForegroundColor DarkGray
 }
 
 # Delete + recreate the page: a corrupted CanvasContent1 cannot be fixed in place.

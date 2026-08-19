@@ -34,7 +34,7 @@ $tunerId = "a2c4e6f8-1b3d-4f5a-9c7e-2d4f6a8b0c11"
 $sites = @(
   @{ Key = 'cascade';   Variant = 'card';    Accent = '#0f6cbd'; Theme = 'IntranetCascade' },
   @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit'; Layout = 'cockpit' },
-  @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad' },
+  @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad'; Layout = 'squad'; Menu = @('Home', 'Backlog', 'Docs', 'Runbooks', 'People') },
   @{ Key = 'momentum';  Variant = 'bold';    Accent = '#4f46e5'; Theme = 'IntranetMomentum'; Layout = 'momentum' },
   @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight'; Layout = 'spotlight' }
 )
@@ -71,8 +71,12 @@ foreach ($s in $sites) {
     & (Join-Path $root "Set-NewsImages.ps1") -Url $url -ClientId $ClientId -ImageFolder $ImageFolder
   }
 
-  # 7. set the top navigation to the prototype menu
-  & (Join-Path $root "Set-SiteNav.ps1") -Url $url -ClientId $ClientId
+  # 7. set the top navigation (per-site menu if the template defines one)
+  if ($s.Menu) {
+    & (Join-Path $root "Set-SiteNav.ps1") -Url $url -ClientId $ClientId -Menu $s.Menu
+  } else {
+    & (Join-Path $root "Set-SiteNav.ps1") -Url $url -ClientId $ClientId
+  }
 }
 
 Write-Host "`nDone. All five template sites deployed, themed and built to match their prototypes." -ForegroundColor Cyan
