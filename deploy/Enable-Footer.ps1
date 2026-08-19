@@ -40,15 +40,14 @@ Get-PnPCustomAction -Scope Web | Where-Object { $_.ClientSideComponentId -eq $co
   ForEach-Object { Remove-PnPCustomAction -Identity $_.Id -Scope Web -Force }
 
 if ($Remove) {
-  # restore the built-in SharePoint site footer we turned off
-  try { Set-PnPFooter -Enabled:$true -ErrorAction Stop } catch {}
-  Write-Host "Removed the Intranet Footer from $Url (built-in footer restored)" -ForegroundColor Cyan
+  Write-Host "Removed the Intranet Footer from $Url" -ForegroundColor Cyan
   return
 }
 
-# Turn OFF the built-in SharePoint site footer so it does not show as an empty bar
-# above our rich footer. (Re-enabled by -Remove.)
-try { Set-PnPFooter -Enabled:$false -ErrorAction Stop } catch { Write-Host "  (could not toggle the built-in footer: $($_.Exception.Message))" -ForegroundColor DarkYellow }
+# The built-in site footer must stay ENABLED. It anchors the Bottom placeholder so our
+# footer renders in-flow at the end of the page. Disabling it makes the footer pin to the
+# screen instead of only showing at the bottom.
+try { Set-PnPFooter -Enabled:$true -ErrorAction Stop } catch { Write-Host "  (could not enable the built-in footer: $($_.Exception.Message))" -ForegroundColor DarkYellow }
 
 if (-not $Copyright) { $Copyright = ("(c) {0}. All rights reserved." -f $BrandText) }
 
