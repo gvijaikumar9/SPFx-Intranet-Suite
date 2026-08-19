@@ -33,8 +33,10 @@ export default class FeedbackApplicationCustomizer extends BaseApplicationCustom
     const webUrl = this.context.pageContext.web.absoluteUrl;
     const user = this.context.pageContext.user;
     const userName = user ? (user.displayName || '') : '';
-    const email = user ? (user.email || user.loginName || '') : '';
-    // actionable contact stored on opt-in: "Name <email>" (or whichever is available)
+    // Only a real email is actionable. loginName is a claims token (i:0#.f|membership|...),
+    // so never use it as a contact address.
+    const email = user && user.email ? user.email : '';
+    // stored on opt-in: "Name <email>", or whichever of the two is available
     const userContact = email ? (userName ? `${userName} <${email}>` : email) : userName;
 
     const element: React.ReactElement<IFeedbackWidgetProps> = React.createElement(FeedbackWidget, {

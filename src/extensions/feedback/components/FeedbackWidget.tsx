@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './FeedbackWidget.module.scss';
 
 export interface IFeedbackWidgetProps {
@@ -21,21 +21,51 @@ const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
   const [contactOk, setContactOk] = useState<boolean>(false);
   const [state, setState] = useState<SendState>('idle');
 
+  const sendingRef = useRef<boolean>(false);          // synchronous double-submit guard
+  const closedRef = useRef<boolean>(false);           // ignore a submit that resolves after close
+  const doneTimerRef = useRef<number | undefined>(undefined);
+
   const rootStyle = { ['--accent' as string]: accent } as React.CSSProperties;
+  const contactLabel = userName || userContact;       // opt-in shows a name, or the email if no name
+
+  const clearTimer = (): void => {
+    if (doneTimerRef.current !== undefined) { window.clearTimeout(doneTimerRef.current); doneTimerRef.current = undefined; }
+  };
+
+  // clean up the auto-close timer if SPFx navigates away / unmounts
+  useEffect(() => (): void => { clearTimer(); }, []);
 
   const reset = (): void => { setRating(0); setComment(''); setContactOk(false); setState('idle'); };
 
-  const close = (): void => { setOpen(false); if (state === 'done') { reset(); } };
+  const openPanel = (): void => { closedRef.current = false; setOpen(true); };
+
+  const close = (): void => {
+    closedRef.current = true;   // any in-flight submit result is now ignored
+    sendingRef.current = false;
+    clearTimer();
+    reset();
+    setOpen(false);
+  };
 
   const send = (): void => {
-    if (state === 'sending') { return; }
+    if (sendingRef.current) { return; } // hard guard against double-submit
+    sendingRef.current = true;
     setState('sending');
     onSubmit(rating, comment, contactOk ? userContact : '')
       .then((ok) => {
+        sendingRef.current = false;
+        if (closedRef.current) { return; } // panel was closed meanwhile
         setState(ok ? 'done' : 'error');
-        if (ok) { window.setTimeout(() => { setOpen(false); reset(); }, 1800); }
+        if (ok) {
+          clearTimer();
+          doneTimerRef.current = window.setTimeout(() => { setOpen(false); reset(); }, 1800);
+        }
       })
-      .catch(() => setState('error'));
+      .catch(() => {
+        sendingRef.current = false;
+        if (closedRef.current) { return; }
+        setState('error');
+      });
   };
 
   const canSend = (rating > 0 || comment.trim().length > 0) && state !== 'sending';
@@ -43,7 +73,7 @@ const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
   return (
     <div className={styles.root} style={rootStyle}>
       {!open && (
-        <button className={styles.fab} type="button" onClick={() => setOpen(true)} aria-label="Give feedback">
+        <button className={styles.fab} type="button" onClick={openPanel} aria-label="Give feedback">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
@@ -65,10 +95,11 @@ const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
                   <button
                     key={n}
                     type="button"
+                    role="radio"
                     className={`${styles.star} ${n <= rating ? styles.on : ''}`}
                     onClick={() => setRating(n)}
                     aria-label={`${n} star${n > 1 ? 's' : ''}`}
-                    aria-pressed={n <= rating}
+                    aria-checked={n === rating}
                   >★</button>
                 ))}
               </div>
@@ -85,10 +116,10 @@ const FeedbackWidget: React.FC<IFeedbackWidgetProps> = (props) => {
                 {comment.length} / {MAX_COMMENT}
               </div>
 
-              {userName && (
+              {contactLabel && (
                 <label className={styles.contact}>
                   <input type="checkbox" checked={contactOk} onChange={(e) => setContactOk(e.target.checked)} />
-                  <span>OK to follow up with me ({userName})</span>
+                  <span>OK to follow up with me ({contactLabel})</span>
                 </label>
               )}
 
