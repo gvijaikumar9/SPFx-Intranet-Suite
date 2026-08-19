@@ -169,6 +169,14 @@
           "manifest": "./src/webparts/greeting/GreetingWebPart.manifest.json"
         }
       ]
+    },
+    "intranet-footer-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/intranetFooter/IntranetFooterApplicationCustomizer.js",
+          "manifest": "./src/extensions/intranetFooter/IntranetFooterApplicationCustomizer.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},

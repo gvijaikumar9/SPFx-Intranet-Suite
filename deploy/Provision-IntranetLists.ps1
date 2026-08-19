@@ -197,6 +197,25 @@ Add-Sample -List 'Celebrations' -Rows @(
     @{ Title = 'Elena Petrova';  CelebrationDate = (Get-Date).AddDays(24); CelebrationType = 'Birthday' }
 )
 
+# ============================ FOOTER LINKS (site-wide footer extension) ============================
+New-IntranetList -Title 'FooterLinks' -Fields @(
+    @{ Display = 'Url';   Internal = 'FooterUrl';   Type = 'URL' },
+    @{ Display = 'Group'; Internal = 'FooterGroup'; Type = 'Text' },
+    @{ Display = 'Order'; Internal = 'FooterOrder'; Type = 'Number' }
+)
+Add-Sample -List 'FooterLinks' -Rows @(
+    @{ Title = 'About us';       FooterUrl = 'https://contoso.sharepoint.com/sites/about, About us';   FooterGroup = 'Company';   FooterOrder = 1 },
+    @{ Title = 'Newsroom';       FooterUrl = 'https://contoso.sharepoint.com/sites/news, Newsroom';     FooterGroup = 'Company';   FooterOrder = 2 },
+    @{ Title = 'Careers';        FooterUrl = 'https://contoso.sharepoint.com/sites/careers, Careers';   FooterGroup = 'Company';   FooterOrder = 3 },
+    @{ Title = 'IT support';     FooterUrl = 'https://contoso.sharepoint.com/sites/it, IT support';     FooterGroup = 'Support';   FooterOrder = 1 },
+    @{ Title = 'HR portal';      FooterUrl = 'https://contoso.sharepoint.com/sites/hr, HR portal';      FooterGroup = 'Support';   FooterOrder = 2 },
+    @{ Title = 'Service desk';   FooterUrl = 'https://contoso.sharepoint.com/sites/help, Service desk'; FooterGroup = 'Support';   FooterOrder = 3 },
+    @{ Title = 'Brand assets';   FooterUrl = 'https://contoso.sharepoint.com/sites/brand, Brand';       FooterGroup = 'Resources'; FooterOrder = 1 },
+    @{ Title = 'Templates';      FooterUrl = 'https://contoso.sharepoint.com/sites/templates, Templates'; FooterGroup = 'Resources'; FooterOrder = 2 },
+    @{ Title = 'Privacy';        FooterUrl = 'https://contoso.sharepoint.com/sites/privacy, Privacy';   FooterGroup = 'Legal';     FooterOrder = 1 },
+    @{ Title = 'Terms of use';   FooterUrl = 'https://contoso.sharepoint.com/sites/terms, Terms';       FooterGroup = 'Legal';     FooterOrder = 2 }
+)
+
 Write-Host "`nDone. Lists provisioned on $Url" -ForegroundColor Cyan
-Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations' } |
+Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations','FooterLinks' } |
     Select-Object Title, ItemCount | Format-Table -AutoSize
