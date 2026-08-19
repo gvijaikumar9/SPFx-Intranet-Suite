@@ -58,6 +58,16 @@ $sections = @(
   'OneColumn'        # 3  footer, full width
 )
 
+# Footer content, shared by every preset. (Add-PnPPageWebPart's PropertiesJson replaces
+# the whole prop bag, so the manifest defaults are not kept - set them here.) The accent
+# follows each site's theme automatically.
+$footerExtra = @{
+  brandText = 'Contoso'
+  blurb     = 'One place for the news, tools and people that keep us moving.'
+  copyright = '(c) 2026 Contoso. For internal use.'
+  social    = 'linkedin|https://www.linkedin.com/company/microsoft, email|mailto:help@contoso.com, web|https://contoso.sharepoint.com'
+}
+
 # Spotlight composition (matches prototype-polished.html): a personalised greeting
 # strip, a hero + latest-news row, an app-tile row, a what's-on + people-spotlight
 # row, a pulse-stats strip, then a full-width learning band. Only the ~8 web parts
@@ -135,7 +145,7 @@ $plan = @(
   @{ Title = 'People Directory';       Sec = 2; Col = 2; Order = 9;  LiveNoList = $true },
 
   # footer, full width
-  @{ Title = 'Footer';                 Sec = 3; Col = 1; Order = 1;  List = 'FooterLinks' }
+  @{ Title = 'Footer';                 Sec = 3; Col = 1; Order = 1;  List = 'FooterLinks'; Extra = $footerExtra }
 )
 
 # Spotlight plan: the prototype-polished composition. Container overrides keep the
@@ -159,7 +169,7 @@ $spotlightPlan = @(
   @{ Title = 'KPI Tiles';              Sec = 5; Col = 1; Order = 1; Variant = 'minimal'; List = 'KPIs' },
 
   # 6  footer
-  @{ Title = 'Footer';                 Sec = 6; Col = 1; Order = 1; List = 'FooterLinks' }
+  @{ Title = 'Footer';                 Sec = 6; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
 )
 
 # Cockpit plan: full-width alerts + hero + KPI, then a balanced three-column deck.
@@ -195,7 +205,7 @@ $cockpitPlan = @(
   @{ Title = 'People Directory';       Sec = 4; Col = 3; Order = 5; LiveNoList = $true },
 
   # 5  footer
-  @{ Title = 'Footer';                 Sec = 5; Col = 1; Order = 1; List = 'FooterLinks' }
+  @{ Title = 'Footer';                 Sec = 5; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
 )
 
 # Squad plan: alerts + KPI band, then a team board (main) + roster/links (side).
@@ -218,7 +228,7 @@ $squadPlan = @(
   @{ Title = 'Raise a Ticket';         Sec = 3; Col = 2; Order = 5; List = 'Tickets' },
 
   # 4  footer
-  @{ Title = 'Footer';                 Sec = 4; Col = 1; Order = 1; List = 'FooterLinks' }
+  @{ Title = 'Footer';                 Sec = 4; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
 )
 
 # Cascade plan: full-width alerts + news hero + KPI, then a 2/3 main + 1/3 sidebar.
@@ -249,7 +259,7 @@ $cascadePlan = @(
   @{ Title = 'People Directory';       Sec = 4; Col = 2; Order = 10; LiveNoList = $true },
 
   # 5  footer
-  @{ Title = 'Footer';                 Sec = 5; Col = 1; Order = 1; List = 'FooterLinks' }
+  @{ Title = 'Footer';                 Sec = 5; Col = 1; Order = 1; List = 'FooterLinks'; Extra = $footerExtra }
 )
 
 # pick the composition preset
