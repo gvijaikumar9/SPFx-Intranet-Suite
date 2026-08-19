@@ -1,12 +1,11 @@
 import * as React from 'react';
 import styles from './Footer.module.scss';
-import { IFooterLink, IFooterGroup, ISocialLink } from '../models/IFooter';
+import { IFooterLink, ISocialLink } from '../models/IFooter';
 
 export interface IFooterProps {
   brandText: string;
-  blurb: string;      // unused in the slim bar; kept for a stable prop shape
   copyright: string;
-  groups: IFooterGroup[];
+  links: IFooterLink[];   // flat, already in FooterOrder
   social: ISocialLink[];
   accent: string;
 }
@@ -31,13 +30,8 @@ function icon(network: string): React.ReactElement {
 // A slim, full-width footer bar: brand, an inline row of links, social icons, and a
 // copyright line, on one line (wraps on narrow screens).
 const Footer: React.FC<IFooterProps> = (props) => {
-  const { brandText, copyright, groups, social, accent } = props;
+  const { brandText, copyright, links, social, accent } = props;
   const rootStyle = { ['--accent' as string]: accent } as React.CSSProperties;
-
-  const links: IFooterLink[] = [];
-  for (let g = 0; g < groups.length; g++) {
-    for (let l = 0; l < groups[g].links.length; l++) { links.push(groups[g].links[l]); }
-  }
 
   return (
     <footer className={styles.footer} style={rootStyle} role="contentinfo">

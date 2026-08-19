@@ -23,7 +23,7 @@ param(
   [string]$Blurb     = 'One place for the news, tools and people that keep us moving.',
   [string]$Copyright = '',
   [string]$ListTitle = 'FooterLinks',
-  [string]$Social    = 'linkedin|https://www.linkedin.com/company/microsoft, email|mailto:help@contoso.com, web|https://contoso.sharepoint.com',
+  [string]$Social    = '',   # e.g. "linkedin|https://..., email|mailto:you@org.com" - empty = no icons
   [string]$Accent    = '#0f6cbd',
   [switch]$Remove
 )

@@ -3,12 +3,11 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
 import Footer, { IFooterProps } from './components/Footer';
-import { groupLinks, parseSocial, IFooterLink } from './models/IFooter';
+import { parseSocial, IFooterLink } from './models/IFooter';
 import { getFooterLinks } from './services/footerStore';
 
 export interface IIntranetFooterProperties {
   brandText?: string;
-  blurb?: string;
   copyright?: string;
   listTitle?: string;   // FooterLinks list; default 'FooterLinks'
   social?: string;      // "linkedin|https://..., email|mailto:..."
@@ -28,6 +27,7 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
   private _bottom: PlaceholderContent | undefined = undefined;
   private _links: IFooterLink[] = [];
   private _pending: number | undefined = undefined;
+  private _placed: boolean = false;
 
   public onInit(): Promise<void> {
     this.context.placeholderProvider.changedEvent.add(this, this._render);
@@ -52,16 +52,33 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
 
     const element: React.ReactElement<IFooterProps> = React.createElement(Footer, {
       brandText: this.properties.brandText || 'Contoso',
-      blurb: this.properties.blurb || '',
       copyright: this.properties.copyright || '',
-      groups: groupLinks(this._links),
+      links: this._links,   // already sorted by FooterOrder
       social: parseSocial(this.properties.social),
       accent: this.properties.accent || '#0f6cbd'
     });
     ReactDom.render(element, this._bottom.domElement);
-    this._bottom.domElement.style.display = 'none'; // hidden until scrolled to the bottom
-    window.setTimeout(() => this._apply(), 400);
+    if (!this._placed) {
+      this._placed = true;
+      this._bottom.domElement.style.display = 'none'; // hide only on first placement
+      window.setTimeout(() => this._apply(), 400);
+    }
   };
+
+  // Only scroll-reveal when the footer is actually pinned (a fixed/sticky context). If it
+  // renders in-flow, keep it always rendered - an in-flow footer already shows only at the
+  // end of the page, and never hiding it means no reflow and no flicker.
+  private _isPinned(): boolean {
+    let el: HTMLElement | null = this._bottom ? this._bottom.domElement : null;
+    let depth = 0;
+    while (el && depth < 6) {
+      const pos = window.getComputedStyle(el).position;
+      if (pos === 'fixed' || pos === 'sticky') { return true; }
+      el = el.parentElement;
+      depth++;
+    }
+    return false;
+  }
 
   private _scroller(): HTMLElement | undefined {
     for (let i = 0; i < REGION_SELECTORS.length; i++) {
@@ -88,7 +105,11 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
 
   private _apply(): void {
     if (!this._bottom || !this._bottom.domElement) { return; }
-    // the placeholder is fixed (built-in footer disabled), so toggling never reflows -> no flicker
+    if (!this._isPinned()) {
+      this._bottom.domElement.style.display = ''; // in-flow: always render, never toggle
+      return;
+    }
+    // pinned (fixed): toggling never reflows the page, so this cannot flicker
     this._bottom.domElement.style.display = this._atBottom() ? '' : 'none';
   }
 
@@ -99,6 +120,7 @@ export default class IntranetFooterApplicationCustomizer extends BaseApplication
   };
 
   protected onDispose(): void {
+    this.context.placeholderProvider.changedEvent.remove(this, this._render);
     document.removeEventListener('scroll', this._schedule, true);
     window.removeEventListener('resize', this._schedule);
     if (this._pending !== undefined) { window.clearTimeout(this._pending); }
