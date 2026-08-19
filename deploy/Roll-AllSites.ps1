@@ -77,6 +77,9 @@ foreach ($s in $sites) {
   } else {
     & (Join-Path $root "Set-SiteNav.ps1") -Url $url -ClientId $ClientId
   }
+
+  # 8. enable the site-wide footer with this template's accent
+  & (Join-Path $root "Enable-Footer.ps1") -Url $url -ClientId $ClientId -Accent $s.Accent
 }
 
 Write-Host "`nDone. All five template sites deployed, themed and built to match their prototypes." -ForegroundColor Cyan
