@@ -31,12 +31,14 @@ $pkg = Join-Path $root "..\sharepoint\solution\spfx-intranet-suite.sppkg"
 $tunerId = "a2c4e6f8-1b3d-4f5a-9c7e-2d4f6a8b0c11"
 
 # base variant + accent per template (from the prototype reconciliation)
+# Each site: base variant, accent, theme name, composition preset, and its own tile-colour
+# palette so every template looks distinct (soft / fluorescent / water / dark).
 $sites = @(
-  @{ Key = 'cascade';   Variant = 'card';    Accent = '#0f6cbd'; Theme = 'IntranetCascade'; Layout = 'cascade' },
-  @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit'; Layout = 'cockpit' },
-  @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad'; Layout = 'squad'; Menu = @('Home', 'Backlog', 'Docs', 'Runbooks', 'People') },
-  @{ Key = 'momentum';  Variant = 'bold';    Accent = '#4f46e5'; Theme = 'IntranetMomentum'; Layout = 'momentum' },
-  @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight'; Layout = 'spotlight' }
+  @{ Key = 'cascade';   Variant = 'card';    Accent = '#0f6cbd'; Theme = 'IntranetCascade'; Layout = 'cascade'; TileColors = 'palette' },
+  @{ Key = 'cockpit';   Variant = 'compact'; Accent = '#0f6cbd'; Theme = 'IntranetCockpit'; Layout = 'cockpit'; TileColors = 'fluro' },
+  @{ Key = 'squad';     Variant = 'card';    Accent = '#0f766e'; Theme = 'IntranetSquad'; Layout = 'squad'; TileColors = 'water'; Menu = @('Home', 'Backlog', 'Docs', 'Runbooks', 'People') },
+  @{ Key = 'momentum';  Variant = 'bold';    Accent = '#4f46e5'; Theme = 'IntranetMomentum'; Layout = 'momentum'; TileColors = 'dark' },
+  @{ Key = 'spotlight'; Variant = 'card';    Accent = '#1f9d86'; Theme = 'IntranetSpotlight'; Layout = 'spotlight'; TileColors = 'palette' }
 )
 if ($Only) { $sites = $sites | Where-Object { $_.Key -eq $Only }; if (-not $sites) { throw "No site with key '$Only'." } }
 
@@ -62,9 +64,10 @@ foreach ($s in $sites) {
   # 4. provision the lists (adds Celebrations etc.; idempotent)
   & (Join-Path $root "Provision-IntranetLists.ps1") -Url $url -ClientId $ClientId
 
-  # 5. build the home page with this template's base variant + composition preset
+  # 5. build the home page with this template's base variant + composition preset + palette
   $layout = if ($s.Layout) { $s.Layout } else { 'default' }
-  & (Join-Path $root "Build-HomePages.ps1") -Url $url -ClientId $ClientId -Variant $s.Variant -Card -RealData -Layout $layout
+  $tiles = if ($s.TileColors) { $s.TileColors } else { 'none' }
+  & (Join-Path $root "Build-HomePages.ps1") -Url $url -ClientId $ClientId -Variant $s.Variant -Card -RealData -Layout $layout -TileColors $tiles
 
   # 6. set the news hero images
   if (-not $SkipImages -and (Test-Path $ImageFolder)) {
@@ -78,10 +81,13 @@ foreach ($s in $sites) {
     & (Join-Path $root "Set-SiteNav.ps1") -Url $url -ClientId $ClientId
   }
 
-  # 8. enable the site-wide footer with this template's accent
+  # 8. enable the site-wide header band with this template's accent (nav from HeaderLinks)
+  & (Join-Path $root "Enable-Header.ps1") -Url $url -ClientId $ClientId -Accent $s.Accent
+
+  # 9. enable the site-wide footer with this template's accent
   & (Join-Path $root "Enable-Footer.ps1") -Url $url -ClientId $ClientId -Accent $s.Accent
 
-  # 9. enable the site-wide feedback bubble with this template's accent
+  # 10. enable the site-wide feedback bubble with this template's accent
   & (Join-Path $root "Enable-Feedback.ps1") -Url $url -ClientId $ClientId -Accent $s.Accent
 }
 

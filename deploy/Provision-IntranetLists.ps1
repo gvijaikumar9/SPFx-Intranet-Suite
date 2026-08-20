@@ -20,7 +20,10 @@
 param(
     [Parameter(Mandatory = $true)][string]$Url,
     [Parameter(Mandatory = $true)][string]$ClientId,
-    [switch]$NoSampleData
+    [switch]$NoSampleData,
+    # A real user to fill the person web parts (Employee of the Month, Kudos, Celebrations).
+    # Empty = leave person fields blank for an admin to set with the people picker.
+    [string]$SampleUser = 'John.Doe@wayll.onmicrosoft.com'
 )
 
 $ErrorActionPreference = "Stop"
@@ -58,6 +61,25 @@ function Add-Sample {
         catch { Write-Host "    (skipped a row in $($List): $($_.Exception.Message))" -ForegroundColor DarkYellow }
     }
     Write-Host "    seeded $seeded sample row(s) into $List" -ForegroundColor Green
+}
+
+# --- helper: fill empty Person fields on a list's rows with the sample user. Idempotent:
+#     only sets fields that are currently blank, so it works on fresh and existing rows. ---
+function Set-PersonField {
+    param([string]$List, [string[]]$Fields, [string]$User)
+    if ([string]::IsNullOrWhiteSpace($User)) { return }
+    if (-not (Get-PnPList -Identity $List -ErrorAction SilentlyContinue)) { return }
+    $items = Get-PnPListItem -List $List -PageSize 200
+    $set = 0
+    foreach ($it in $items) {
+        $vals = @{}
+        foreach ($f in $Fields) { if (-not $it.FieldValues[$f]) { $vals[$f] = $User } }
+        if ($vals.Count -gt 0) {
+            try { Set-PnPListItem -List $List -Identity $it.Id -Values $vals -ErrorAction Stop | Out-Null; $set++ }
+            catch { Write-Host "    (could not set person on $List item $($it.Id): $($_.Exception.Message))" -ForegroundColor DarkYellow }
+        }
+    }
+    if ($set -gt 0) { Write-Host "    set $User on $set $List row(s)" -ForegroundColor Green }
 }
 
 # ============================ ANNOUNCEMENTS (ticker) ============================
@@ -197,6 +219,38 @@ Add-Sample -List 'Celebrations' -Rows @(
     @{ Title = 'Elena Petrova';  CelebrationDate = (Get-Date).AddDays(24); CelebrationType = 'Birthday' }
 )
 
+# ============================ HEADER LINKS (site-wide header extension) ============================
+# The top nav shown in the Intranet Header band. Ordered left to right by HeaderOrder.
+New-IntranetList -Title 'HeaderLinks' -Fields @(
+    @{ Display = 'Url';   Internal = 'HeaderUrl';   Type = 'URL' },
+    @{ Display = 'Order'; Internal = 'HeaderOrder'; Type = 'Number' }
+)
+Add-Sample -List 'HeaderLinks' -Rows @(
+    @{ Title = 'Home';        HeaderUrl = 'https://contoso.sharepoint.com/sites/intranet, Home';               HeaderOrder = 1 },
+    @{ Title = 'News';        HeaderUrl = 'https://contoso.sharepoint.com/sites/intranet/news, News';          HeaderOrder = 2 },
+    @{ Title = 'Departments'; HeaderUrl = 'https://contoso.sharepoint.com/sites/intranet/departments, Depts'; HeaderOrder = 3 },
+    @{ Title = 'People';      HeaderUrl = 'https://contoso.sharepoint.com/sites/intranet/people, People';      HeaderOrder = 4 },
+    @{ Title = 'Tools';       HeaderUrl = 'https://contoso.sharepoint.com/sites/intranet/tools, Tools';        HeaderOrder = 5 },
+    @{ Title = 'Support';     HeaderUrl = 'https://contoso.sharepoint.com/sites/intranet/support, Support';    HeaderOrder = 6 }
+)
+
+# ============================ HEADER CONFIG (owner-editable header settings) ============================
+# A single-row list the header's gear-menu writes to, so site owners can toggle the header on/off
+# and edit brand/accent/CTA from the browser without PowerShell. Empty fields = fall back to the
+# deploy-script defaults set by Enable-Header.ps1.
+New-IntranetList -Title 'HeaderConfig' -Fields @(
+    @{ Display = 'Enabled';     Internal = 'HdrEnabled';    Type = 'Boolean' },
+    @{ Display = 'Hide Native'; Internal = 'HdrHideNative'; Type = 'Boolean' },
+    @{ Display = 'Brand';       Internal = 'HdrBrand';      Type = 'Text' },
+    @{ Display = 'Show CTA';    Internal = 'HdrShowCta';    Type = 'Boolean' },
+    @{ Display = 'CTA Text';    Internal = 'HdrCtaText';    Type = 'Text' },
+    @{ Display = 'CTA Url';     Internal = 'HdrCtaUrl';     Type = 'Text' },
+    @{ Display = 'Accent';      Internal = 'HdrAccent';     Type = 'Text' }
+)
+Add-Sample -List 'HeaderConfig' -Rows @(
+    @{ Title = 'Header'; HdrEnabled = $true; HdrHideNative = $true }
+)
+
 # ============================ FOOTER LINKS (site-wide footer extension) ============================
 New-IntranetList -Title 'FooterLinks' -Fields @(
     @{ Display = 'Url';   Internal = 'FooterUrl';   Type = 'URL' },
@@ -225,6 +279,14 @@ New-IntranetList -Title 'Feedback' -Fields @(
     @{ Display = 'Contact'; Internal = 'Contact'; Type = 'Text' }
 )
 
+# --- fill the person web parts with the sample user (John.Doe by default) ---
+if (-not $NoSampleData) {
+    Write-Host "`nFilling person fields with $SampleUser" -ForegroundColor Cyan
+    Set-PersonField -List 'EmployeeOfMonth' -Fields @('Employee') -User $SampleUser
+    Set-PersonField -List 'Kudos'           -Fields @('ToPerson', 'FromPerson') -User $SampleUser
+    Set-PersonField -List 'Celebrations'    -Fields @('Person') -User $SampleUser
+}
+
 Write-Host "`nDone. Lists provisioned on $Url" -ForegroundColor Cyan
-Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations','FooterLinks','Feedback' } |
+Get-PnPList | Where-Object { $_.Title -in 'Announcements','Tickets','Kudos','EmployeeOfMonth','QuickLinks','KPIs','FAQ','Events','IntranetGallery','News','Holidays','PollVotes','Celebrations','HeaderLinks','HeaderConfig','FooterLinks','Feedback' } |
     Select-Object Title, ItemCount | Format-Table -AutoSize
