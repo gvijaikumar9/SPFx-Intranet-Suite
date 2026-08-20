@@ -10,6 +10,7 @@
   "requiresCustomScript": false,
   "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
   "supportsThemeVariants": true,
+  "supportsFullBleed": true,
 
   "preconfiguredEntries": [{
     "groupId": "b1e7f3a2-9c4d-4e8b-a1f2-3d6c0e5a7b90", // custom group so all suite web parts sit together
