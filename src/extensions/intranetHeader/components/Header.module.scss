@@ -1,0 +1,199 @@
+// A slim, full-width header band. Clean white surface with a thin accent bottom line, so a
+// logo of any colour sits well on it. Active nav item and CTA use the site accent.
+.header {
+  --accent: #0f6cbd;
+  box-sizing: border-box;
+  width: 100%;
+  background: #ffffff;
+  color: #242a31;
+  border-bottom: 3px solid var(--accent);
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  * { box-sizing: border-box; }
+
+  .inner {
+    max-width: 1204px;
+    margin: 0 auto;
+    padding: 8px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px 26px;
+    min-height: 48px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+  }
+
+  .logo {
+    display: block;
+    height: 32px;
+    width: auto;
+    max-width: 220px;
+    object-fit: contain;
+  }
+
+  .brandText {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1b1f24;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 4px 22px;
+    flex: 1 1 auto;
+  }
+
+  .link {
+    position: relative;
+    color: #4a525b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 6px 2px;
+    transition: color 0.12s ease;
+  }
+
+  .link:hover { color: var(--accent); }
+
+  // active item gets an accent underline
+  .link.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .link.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: filter 0.12s ease;
+  }
+
+  .cta:hover { filter: brightness(0.92); }
+
+  .burger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #d8dde2;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #242a31;
+    cursor: pointer;
+  }
+
+  .burger:hover { background: #f3f5f7; }
+
+  // owner-only settings gear
+  .gear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #5a636d;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  .gear:hover { background: #f0f2f4; color: var(--accent); }
+
+  // slim strip shown to managers when the header is turned off, so they can re-enable it
+  &.off {
+    background: #f7f8fa;
+    border-bottom-color: #d8dde2;
+  }
+
+  .offNote {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7480;
+    flex: 1 1 auto;
+  }
+
+  // the inline desktop nav; hidden on narrow screens (drawer used instead)
+  .desktop { display: flex; }
+
+  // the drawer nav stacks vertically
+  .drawer {
+    border-top: 1px solid #eaedf0;
+    padding: 6px 32px 12px;
+  }
+
+  .stack {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .stack .link {
+    display: block;
+    width: 100%;
+    padding: 8px 2px;
+  }
+
+  .stack .link.active::after { display: none; }
+
+  .link:focus-visible,
+  .cta:focus-visible,
+  .burger:focus-visible,
+  .brand:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 740px) {
+    .inner { padding: 8px 18px; }
+    .desktop { display: none; }
+    .burger { display: inline-flex; }
+    .drawer { padding: 6px 18px 12px; }
+  }
+
+  @media (min-width: 741px) {
+    .drawer { display: none; }
+  }
+}

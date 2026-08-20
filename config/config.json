@@ -170,6 +170,14 @@
         }
       ]
     },
+    "intranet-header-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/intranetHeader/IntranetHeaderApplicationCustomizer.js",
+          "manifest": "./src/extensions/intranetHeader/IntranetHeaderApplicationCustomizer.manifest.json"
+        }
+      ]
+    },
     "intranet-footer-application-customizer": {
       "components": [
         {

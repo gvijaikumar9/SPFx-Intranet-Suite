@@ -1,0 +1,132 @@
+// Owner-only settings dialog for the header. Centred modal over a dim backdrop.
+.overlay {
+  --accent: #0f6cbd;
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 96px;
+  background: rgba(0, 0, 0, 0.32);
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  * { box-sizing: border-box; }
+
+  .panel {
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    background: #ffffff;
+    color: #242a31;
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid #eaedf0;
+  }
+
+  .title { font-size: 15px; font-weight: 700; }
+
+  .close {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    color: #6b7480;
+    cursor: pointer;
+    padding: 0 2px;
+  }
+
+  .close:hover { color: #242a31; }
+
+  .body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toggle input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+  .field { display: flex; flex-direction: column; gap: 5px; flex: 1 1 auto; }
+
+  .lbl { font-size: 12px; font-weight: 600; color: #57606a; }
+
+  .input {
+    border: 1px solid #d0d7de;
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-size: 14px;
+    color: #242a31;
+    width: 100%;
+  }
+
+  .input:disabled { background: #f3f5f7; color: #9aa4af; }
+
+  .input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+
+  .row { display: flex; gap: 12px; align-items: flex-end; }
+
+  .color {
+    width: 46px;
+    height: 34px;
+    padding: 2px;
+    border: 1px solid #d0d7de;
+    border-radius: 5px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .hint { margin: 0; font-size: 12px; color: #8b95a0; }
+
+  .error { margin: 0; font-size: 13px; color: #b42318; }
+
+  .foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 18px;
+    border-top: 1px solid #eaedf0;
+  }
+
+  .cancel {
+    border: 1px solid #d0d7de;
+    background: #fff;
+    color: #242a31;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cancel:hover { background: #f3f5f7; }
+
+  .save {
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 5px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .save:hover { filter: brightness(0.93); }
+  .save:disabled { opacity: 0.6; cursor: default; }
+}
