@@ -21,9 +21,10 @@ param(
     [Parameter(Mandatory = $true)][string]$Url,
     [Parameter(Mandatory = $true)][string]$ClientId,
     [switch]$NoSampleData,
-    # A real user to fill the person web parts (Employee of the Month, Kudos, Celebrations).
-    # Empty = leave person fields blank for an admin to set with the people picker.
-    [string]$SampleUser = 'John.Doe@wayll.onmicrosoft.com'
+    # A real user in YOUR tenant to fill the person web parts (Employee of the Month, Kudos,
+    # Celebrations). Replace the placeholder below, or pass -SampleUser. Empty = leave person
+    # fields blank for an admin to set with the people picker.
+    [string]$SampleUser = 'john.doe@contoso.onmicrosoft.com'
 )
 
 $ErrorActionPreference = "Stop"
