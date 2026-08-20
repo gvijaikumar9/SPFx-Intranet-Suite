@@ -7,6 +7,8 @@ blocks most intranets end up rebuilding by hand.
 One solution, one package, many web parts. Install once and get the whole set.
 SPFx lazy-loads each web part's bundle, so an unused web part costs a page nothing.
 
+![An intranet home page built with the SPFx Intranet Suite](docs/screenshots/hero.png)
+
 ## Web parts
 
 | Web part | What it does | Source |
@@ -37,6 +39,39 @@ Every web part ships with sample data on by default, so it renders the moment yo
 drop it on a page. Point it at a list, or turn on live data, when you are ready.
 People Directory and Org Chart use the site's own search and user profile services,
 so they need no extra admin consent.
+
+## Site-wide extensions
+
+Two Application Customizers add chrome to every page in a site, not just one web part.
+
+| Extension | What it does | Source |
+| --- | --- | --- |
+| **Intranet Header** | A full-width band at the top of every page: brand (logo or text), an inline top nav, and an optional call-to-action button. The current page's nav item is highlighted. | HeaderLinks list |
+| **Intranet Footer** | A slim full-width footer bar on every page, revealed when the page is scrolled to the bottom, with brand, links, social icons and a copyright line. | FooterLinks list |
+| **Feedback** | A fixed feedback bubble in the bottom-right corner: a rating, a comment, and an optional "OK to follow up" so the site owner can reply. | Feedback list |
+
+Enable them per site after the package is installed. Each is idempotent and theme-accent aware:
+
+```powershell
+.\deploy\Enable-Header.ps1  -Url "https://contoso.sharepoint.com/sites/intranet" -ClientId "<app-id>" -BrandText "Contoso" -LogoUrl "/sites/intranet/SiteAssets/logo.png" -Accent "#0f6cbd" -CtaText "Raise a ticket" -CtaUrl "/sites/intranet/support"
+.\deploy\Enable-Footer.ps1  -Url "https://contoso.sharepoint.com/sites/intranet" -ClientId "<app-id>" -BrandText "Contoso" -Accent "#0f6cbd"
+.\deploy\Enable-Feedback.ps1 -Url "https://contoso.sharepoint.com/sites/intranet" -ClientId "<app-id>" -Accent "#0f6cbd"
+```
+
+## Screenshots
+
+A look at the web parts. Every one ships with sample data on by default, so these render before you wire up any list.
+
+| | | |
+| --- | --- | --- |
+| **Announcements Ticker**<br>![Announcements Ticker](docs/screenshots/announcements-ticker.png) | **Content Rollup**<br>![Content Rollup](docs/screenshots/content-rollup.png) | **KPI Tiles**<br>![KPI Tiles](docs/screenshots/kpi-tiles.png) |
+| **Chart from a List**<br>![Chart from a List](docs/screenshots/chart-from-list.png) | **Poll**<br>![Poll](docs/screenshots/poll.png) | **Kudos**<br>![Kudos](docs/screenshots/kudos.png) |
+| **Employee of the Month**<br>![Employee of the Month](docs/screenshots/employee-of-the-month.png) | **Celebrations**<br>![Celebrations](docs/screenshots/celebrations.png) | **Upcoming Events**<br>![Upcoming Events](docs/screenshots/upcoming-events.png) |
+| **Event Countdown**<br>![Event Countdown](docs/screenshots/event-countdown.png) | **Upcoming Holidays**<br>![Upcoming Holidays](docs/screenshots/upcoming-holidays.png) | **Raise a Ticket**<br>![Raise a Ticket](docs/screenshots/raise-a-ticket.png) |
+| **FAQ Accordion**<br>![FAQ Accordion](docs/screenshots/faq-accordion.png) | **Quick Links**<br>![Quick Links](docs/screenshots/quick-links.png) | **Tabs**<br>![Tabs](docs/screenshots/tabs.png) |
+| **Image Gallery**<br>![Image Gallery](docs/screenshots/image-gallery.png) | **Weather**<br>![Weather](docs/screenshots/weather.png) | **Site header** (with an owner settings panel)<br>![Site header](docs/screenshots/header.png) |
+
+A full write-up of each web part, with how to wire it to a list, is on the blog: [SPFx web parts for a modern SharePoint intranet](https://www.fivenumber.com/?p=1469).
 
 ## Shared options on every web part
 
