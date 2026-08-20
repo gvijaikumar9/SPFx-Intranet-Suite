@@ -71,7 +71,7 @@ A look at the web parts. Every one ships with sample data on by default, so thes
 | **FAQ Accordion**<br>![FAQ Accordion](docs/screenshots/faq-accordion.png) | **Quick Links**<br>![Quick Links](docs/screenshots/quick-links.png) | **Tabs**<br>![Tabs](docs/screenshots/tabs.png) |
 | **Image Gallery**<br>![Image Gallery](docs/screenshots/image-gallery.png) | **Weather**<br>![Weather](docs/screenshots/weather.png) | **Site header** (with an owner settings panel)<br>![Site header](docs/screenshots/header.png) |
 
-A full write-up of each web part, with how to wire it to a list, is on the blog: [SPFx web parts for a modern SharePoint intranet](https://www.fivenumber.com/?p=1469).
+A full write-up of each web part, with how to wire it to a list, is on the blog at [fivenumber.com](https://www.fivenumber.com).
 
 ## Shared options on every web part
 
